@@ -2,18 +2,7 @@
 ### Developed by: Jeroen Roelofs, Daniel Scheerooren & Jorn Dallinga
 ### GeoScripting Course, Wageningen University
 ### Modification date: 29-01-2015
-### 
-###  .___________. _______     ___      .___  ___.     _______   _______         __  
-###  |           ||   ____|   /   \     |   \/   |    |       \ |       \       |  | 
-### ` ---|  |----`|  |__     /  ^  \    |  \  /  |    |  .--.  ||  .--.  |      |  | 
-###      |  |     |   __|   /  /_\  \   |  |\/|  |    |  |  |  ||  |  |  |.--.  |  | 
-###      |  |     |  |____ /  _____  \  |  |  |  |    |  '--'  ||  '--'  ||  `--'  | 
-###      |__|     |_______/__/     \__\ |__|  |__|    |_______/ |_______/  \______/                                                                                  
-###  
-###  
-### E-mail: jeroen.roelofs@wur.nl; daniel.scheerooren@wur.nl; jorn.dallinga@wur.nl
-### 
-###
+
 ###################################### Main script ######################################
 
 ### --------------------------------- Aquire and load libraries ------------------------

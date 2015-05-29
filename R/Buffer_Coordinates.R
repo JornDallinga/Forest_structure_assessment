@@ -1,18 +1,7 @@
-# Team DDJ
-# Geo-Scripting Project Week 
-
-# Plot Species Distribution Model for forest fragmentation 
-
-# Modification date: 29-01-2015
-# E-mail: jeroen.roelofs@.nl
-
-#-------------------------------------- Function -----------------------------------
-###################################### Settings ######################################
-
-BufferRandomPointsInCountry <- function(Countrycode, AmountOfRandomPoints, BufferDistance) {
+Buffertest <- function(Countrycode, BufferDistance) {
   
   NeedUTMOutput <- F #Set to True if used to convert it to UTM.
-    
+  
   ###################################### Main Script ######################################
   # Download administrative boundaries of the given country 
   CountryShape <- getData('GADM', country = Countrycode, level=1) ## administrative boundaries
@@ -21,27 +10,29 @@ BufferRandomPointsInCountry <- function(Countrycode, AmountOfRandomPoints, Buffe
   # Transform country shape to projection type lat/lon
   spTransform(CountryShape, coordsys)
   
-  # Set RandomPoints to NULL
-  RandomPoints <- NULL
-  StayInLoop <- TRUE
+  #dran$x = coordinates
+  #dran$y = coordinates
   
-  while (StayInLoop) {## create random points
-    dran <- runifpoint(AmountOfRandomPoints, win = as.vector(extent(CountryShape)))
-    
-    ## make the random point spatial points
-    Spat <- SpatialPoints(data.frame(x = dran$x, y = dran$y), proj4string = CRS(proj4string(CountryShape)))
-    
-    ## select only the once within belgium
-    RandomPoints <- gIntersection(Spat, CountryShape) # Comment if KML file is the input
+  ## make the random point spatial points
+  Spat <- SpatialPoints(data.frame(x = 9.703981, y = -83.629092), proj4string = CRS(proj4string(CountryShape)))
   
-    if (class(RandomPoints)[1] == "SpatialPoints") {
-      StayInLoop <- FALSE
-    }
-  }
-    
+}
+
+############################################################
+Buffer_Point <- function(Countrycode, BufferDistance) {
+  
+  
+  NeedUTMOutput <- F #Set to True if used to convert it to UTM.
+  
+  CountryShape <- getData('GADM', country = 'CRI', level=1)
+  coordsys <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+  spTransform(CountryShape, coordsys)
+  Spat <- SpatialPoints(data.frame(x = mydata$x[2], y = mydata$y[2]), proj4string = CRS(proj4string(CountryShape)))
+  Spat
+  
   # Pinpoint UTM location in UTM grid.
-  X = RandomPoints@coords[1,1]
-  Y = RandomPoints@coords[1,2]
+  X = Spat@coords[1,1]
+  Y = Spat@coords[1,2]
   UTMLocation <- utm_zone(x = X, y = Y)
   
   # Make location ready for projection change.
@@ -50,7 +41,7 @@ BufferRandomPointsInCountry <- function(Countrycode, AmountOfRandomPoints, Buffe
   
   # Hemisphere <- "N"
   # Hemisphere <- "S"
-    
+  
   # Assign String values for CRS input.
   if(Hemisphere == "N") {
     HemiText <- "+north"
@@ -63,12 +54,11 @@ BufferRandomPointsInCountry <- function(Countrycode, AmountOfRandomPoints, Buffe
   CRSText <- paste("+proj=utm", ZoneText, HemiText, sep = " ")
   
   # Transform WGS to UTM.
-  PointsUTM <- spTransform(RandomPoints, CRS(CRSText))
+  PointsUTM <- spTransform(Spat, CRS(CRSText))
   
   # Buffers all the points.
   BufferUTM <- gBuffer(PointsUTM, width=BufferDistance)
   
-  ### Sets projection back to WGS85 if TRUE.
   if (NeedUTMOutput == F) {
     BufferWGS <- spTransform(BufferUTM, CRS("+proj=longlat +datum=WGS84"))
     saveRDS(BufferWGS, file = "Data/BufferWGS.rds", ascii = FALSE, version = NULL,
@@ -77,7 +67,15 @@ BufferRandomPointsInCountry <- function(Countrycode, AmountOfRandomPoints, Buffe
     saveRDS(BufferUTM, file = "Data/BufferUTM.rds", ascii = FALSE, version = NULL,
             compress = TRUE, refhook = NULL)
   }
-  as = T
-  return(as)
+  
+  #as = T
+  #return(as)
+  
+  plot(CountryShape)
+  plot(BufferWGS, add=TRUE, col = "red")
+  
 }
 
+
+Spat
+CountryShape

@@ -10,6 +10,7 @@
 ### Install packages if required.
 if (!require(SDMTools)) install.packages('SDMTools')
 if (!require(gfcanalysis)) install.packages('gfcanalysis')
+if (!require(rgdal)) install.packages('xlsx')
 if (!require(rgdal)) install.packages('rgdal')
 if (!require(rgeos)) install.packages('rgeos')
 if (!require(sp)) install.packages('sp')
@@ -29,9 +30,11 @@ library (spatstat)
 library (devtools)
 library (VCF)
 library (plyr)
+library (xlsx)
 
 ###------------------------------------- Source Scripts ----------------------------------
 source("R/BufferRandomPointsInCountry.R")
+source("R/Buffer_Coordinates.R")
 source("R/Sexton.R")
 source("R/Hansen.R")
 source("R/SDMTool.R")
@@ -66,36 +69,42 @@ if (file.exists('extract_hansen')){
 
 ###------------------------------------- Set variables -----------------------------------
 ### Set variables by user
-Countrycode <- "BLZ"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
+Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 Year <- 2000              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
-AmountOfRandomPoints <- 1 # Number of random point created in country
-AmountOfLoops <- 5        # Number of buffers randomly created in country
 Threshold <- 70           # Cells with values greater than threshold are classified as 'Forest'
 
 
 
 ###------------------------------------- Create Matrix for results ----------------------
+
+## reading excel file
+mydata <- read.xlsx("Correct_excel.xlsx", 1)
+countcoords <- nrow(mydata)
+
 #creating empty matrix
-mat <- matrix(, nrow = AmountOfLoops, ncol = 3)
-colnames(mat) <- c("Buffer", "Sexton", "Hansen")
+mat <- matrix(, nrow = countcoords, ncol = 5)
+colnames(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen")
 
 #adding names of the buffers to the matrix
-for(i in 1:AmountOfLoops) {
+for(i in 1:countcoords) {
   nam <- paste("Buffer size: ", BufferDistance, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
   mat[i] <- nam
 }
-mat
 
 
 ###------------------------------------- Create loops -----------------------------------
 count <- 2
-for(i in 1:AmountOfLoops) {
+for(i in 1:countcoords) {
   
 
   ###------------------------------------ Run functions -----------------------------------
   
-  BufferRandomPointsInCountry(Countrycode, AmountOfRandomPoints, BufferDistance) #Places a .rds file in the output folder
+  Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the output folder
+  
+  ## adding Coordinates to the matrix
+  mat[i, count] <- mydata$x[3 - i]
+  mat[i, count + 1] <- mydata$y[1]
   
   ## Analysis with sexton data
   S <- Sexton(Year, Threshold)
@@ -115,7 +124,7 @@ for(i in 1:AmountOfLoops) {
   
   #Adding Hansen results to the matrix
   mat[i, count] <- SDMH
-  count <- count -1
+  count <- count - 2
   
   New_S <-projectRaster(S, H, res, crs, method="ngb", 
                         alignOnly=FALSE, over=FALSE, filename="")

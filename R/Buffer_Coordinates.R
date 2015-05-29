@@ -70,12 +70,12 @@ Buffer_Point <- function(Countrycode, BufferDistance) {
   
   #as = T
   #return(as)
-  
-  plot(CountryShape)
-  plot(BufferWGS, add=TRUE, col = "red")
+
   
 }
 
 
+plot(CountryShape)
+plot(BufferWGS, add=TRUE, col = "red")
 Spat
 CountryShape

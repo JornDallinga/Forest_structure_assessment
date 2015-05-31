@@ -95,16 +95,20 @@ for(i in 1:countcoords) {
 
 ###------------------------------------- Create loops -----------------------------------
 count <- 2
+j <- 0
+
 for(i in 1:countcoords) {
-  
+
 
   ###------------------------------------ Run functions -----------------------------------
   
   Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the output folder
   
   ## adding Coordinates to the matrix
-  mat[i, count] <- mydata$x[3 - i]
-  mat[i, count + 1] <- mydata$y[1]
+  mat[i, count] <- mydata$x[1 + j]
+  count <- count + 1
+  mat[i, count] <- mydata$y[1 + j]
+  count <- count + 1
   
   ## Analysis with sexton data
   S <- Sexton(Year, Threshold)
@@ -124,13 +128,16 @@ for(i in 1:countcoords) {
   
   #Adding Hansen results to the matrix
   mat[i, count] <- SDMH
-  count <- count - 2
+  count <- count - 3
   
   New_S <-projectRaster(S, H, res, crs, method="ngb", 
                         alignOnly=FALSE, over=FALSE, filename="")
   
+  j <- 1 + j
 }
 
+mat
+write.xlsx(mat, sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year))
 
 # Assign plot fragmentation function to variables
 plot_Sexton <- SDM_plot(S)

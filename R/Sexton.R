@@ -40,7 +40,7 @@ Sexton <- function(Year, Threshold){
   
   # Clear directory to prevent extraction errors
   unlink("data/extract_sexton/*.tif", recursive = FALSE)
-    
+  
   return (Buffer_Crop)
   
 }  

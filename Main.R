@@ -96,6 +96,7 @@ for(i in 1:countcoords) {
 ###------------------------------------- Create loops -----------------------------------
 count <- 2
 j <- 0
+#g <- 1
 
 for(i in 1:countcoords) {
 
@@ -133,7 +134,11 @@ for(i in 1:countcoords) {
   New_S <-projectRaster(S, H, res, crs, method="ngb", 
                         alignOnly=FALSE, over=FALSE, filename="")
   
+  # Clear directory to prevent extraction errors
+  unlink("data/BufferWGS.rds", recursive = FALSE)
+  
   j <- 1 + j
+
 }
 
 mat

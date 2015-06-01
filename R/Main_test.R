@@ -84,17 +84,29 @@ countcoords <- nrow(mydata)
 
 
 #creating empty matrix
-mat <- matrix(, nrow = countcoords, ncol = 5)
-colnames(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen")
+mat <- matrix(, nrow = countcoords, ncol = 43)
+
+#creating empty dataframe
+mat <- data.frame(mat)
+
+
+
+##naming first 5 columns
+#colnames(SDMS) -> SDMS_colnames
+#names(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMS_colnames)
 
 #adding names of the buffers to the matrix
 for(i in 1:countcoords) {
   nam <- paste("Buffer size: ", BufferDistance, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
-  mat[i] <- nam
+  mat[1] <- nam
 }
 
-#creating empty dataframe
-mat <- data.frame(mat)
+mat -> mat1
+#for(i in 1:countcoords) {
+#  nam <- paste("Buffer test: ", BufferDistance, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
+#  mat[2] <- nam
+#}
+
 
 ###------------------------------------- Create loops -----------------------------------
 count <- 2
@@ -102,12 +114,11 @@ j <- 0
 #g <- 1
 
 for(i in 1:countcoords) {
-
-
+  
+  
   ###------------------------------------ Run functions -----------------------------------
   
   Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the output folder
-  
   
   ## Analysis with sexton data
   S <- Sexton(Year, Threshold)
@@ -115,24 +126,9 @@ for(i in 1:countcoords) {
   ## Species Distribution Modelling for both Sexton and Hansen data
   SDMS <- SDM_function(S)
   
-  ## adding column names based on output SDMTools function
-  if (j < 1){
-    #naming first 5 columns
-    colnames(SDMS) -> SDMS_colnames
-    names(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMS_colnames)
-  } else {
-    
-  }
-
-  ## adding Coordinates to the matrix
-  mat[i, count] <- mydata$x[1 + j]
-  count <- count + 1
-  mat[i, count] <- mydata$y[1 + j]
-  count <- count + 1
-  
   #Adding Sexton results to the matrix
-  mat[i, count] <- SDMS
-  count <- count + 1
+  mat[i, 6:43] <- SDMS
+  #count <- count + 1
   
   ## Global Forest Cover Analysis with Hansen data
   H <- Hansen(Threshold)
@@ -141,8 +137,8 @@ for(i in 1:countcoords) {
   SDMH <- SDM_function(H)
   
   #Adding Hansen results to the matrix
-  mat[i, count] <- SDMH
-  count <- count - 3
+  mat1[i, 6:43] <- SDMH
+  #count <- count - 3
   
   New_S <-projectRaster(S, H, res, crs, method="ngb", 
                         alignOnly=FALSE, over=FALSE, filename="")
@@ -150,8 +146,26 @@ for(i in 1:countcoords) {
   # Clear directory to prevent extraction errors
   unlink("data/BufferWGS.rds", recursive = FALSE)
   
+  ## adding column names based on output SDMTools function
+  if (j < 1){
+    #naming first 5 columns
+    colnames(SDMS) -> SDMS_colnames
+    colnames(SDMH) -> SDMH_colnames
+    names(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMS_colnames)
+    names(mat1) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMH_colnames)
+  } else {
+    
+  }
+  
+  ## adding Coordinates to the matrix
+  mat[i, count] <- mydata$x[1 + j]
+  count <- count + 1
+  mat[i, count] <- mydata$y[1 + j]
+  
+  ## assigning looping variables
   j <- 1 + j
-
+  count <- count - 1
+  
 }
 
 mat
@@ -162,7 +176,7 @@ plot_Sexton <- SDM_plot(S)
 plot_Hansen <- SDM_plot(H)
 
 New_proj_Sexton <-projectRaster(plot_Sexton, plot_Hansen, res, crs, method="ngb", 
-                      alignOnly=FALSE, over=FALSE, filename="")
+                                alignOnly=FALSE, over=FALSE, filename="")
 
 png(filename="output/Fragmentation.png")
 par(mfrow=c(2,2))

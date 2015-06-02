@@ -24,6 +24,9 @@ Sexton <- function(Year, Threshold){
   x <- list.files(sprintf('%s/%s',dir,'extract_sexton/'), full.names=TRUE)
   
   # Load data into R environment
+  
+  # filename <- sprintf('%s/%s%s', dir, urlP, urlF)
+  
   Raster <- raster(x[1])
   
   # Masking the Raster to the buffer area

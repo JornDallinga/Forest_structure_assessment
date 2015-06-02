@@ -18,7 +18,7 @@ if (!require(raster)) install.packages('raster')
 if (!require(spatstat)) install.packages('spatstat')
 if (!require(devtools)) install.packages("devtools")
 if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
-devtools::install_github('dutri001/VCF')
+devtools::install_github('jorndallinga/VCF')
 
 ### Access package libraries
 library (SDMTools)
@@ -84,7 +84,7 @@ countcoords <- nrow(mydata)
 
 
 #creating empty matrix
-mat <- matrix(, nrow = countcoords, ncol = 43)
+mat <- matrix(, nrow = countcoords, ncol = 44)
 
 #creating empty dataframe
 mat <- data.frame(mat)
@@ -96,22 +96,29 @@ mat <- data.frame(mat)
 #names(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMS_colnames)
 
 #adding names of the buffers to the matrix
-for(i in 1:countcoords) {
-  nam <- paste("Buffer size: ", BufferDistance, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
-  mat[1] <- nam
-}
-
-mat -> mat1
 #for(i in 1:countcoords) {
-#  nam <- paste("Buffer test: ", BufferDistance, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
-#  mat[2] <- nam
+#  nam <- paste(Countrycode, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
+#  mat[1] <- nam
 #}
 
 
+for(i in 1:countcoords) {
+  nam <- paste(Countrycode)
+  nam1 <- paste(Year)
+  nam2 <- paste(BufferDistance)
+  nam3 <- paste(Threshold)
+  
+  mat[1] <- nam
+  mat[2] <- nam1
+  mat[3] <- nam2
+  mat[4] <- nam3
+}
+
+mat -> mat1
+
 ###------------------------------------- Create loops -----------------------------------
-count <- 2
+count <- 5
 j <- 0
-#g <- 1
 
 for(i in 1:countcoords) {
   
@@ -127,7 +134,9 @@ for(i in 1:countcoords) {
   SDMS <- SDM_function(S)
   
   #Adding Sexton results to the matrix
-  mat[i, 6:43] <- SDMS
+  SDMS_col <- ncol(SDMS) + 6
+  mat[i, 7:SDMS_col] <- SDMS
+  
   #count <- count + 1
   
   ## Global Forest Cover Analysis with Hansen data
@@ -137,7 +146,8 @@ for(i in 1:countcoords) {
   SDMH <- SDM_function(H)
   
   #Adding Hansen results to the matrix
-  mat1[i, 6:43] <- SDMH
+  SDMH_col <- ncol(SDMH) + 6
+  mat1[i, 7:SDMH_col] <- SDMH
   #count <- count - 3
   
   New_S <-projectRaster(S, H, res, crs, method="ngb", 
@@ -148,19 +158,21 @@ for(i in 1:countcoords) {
   
   ## adding column names based on output SDMTools function
   if (j < 1){
-    #naming first 5 columns
+    
     colnames(SDMS) -> SDMS_colnames
     colnames(SDMH) -> SDMH_colnames
-    names(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMS_colnames)
-    names(mat1) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMH_colnames)
+    names(mat) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", SDMS_colnames)
+    names(mat1) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", SDMH_colnames)
   } else {
     
   }
   
   ## adding Coordinates to the matrix
   mat[i, count] <- mydata$x[1 + j]
+  mat1[i, count] <- mydata$x[1 + j]
   count <- count + 1
   mat[i, count] <- mydata$y[1 + j]
+  mat1[i, count] <- mydata$y[1 + j]
   
   ## assigning looping variables
   j <- 1 + j
@@ -168,7 +180,7 @@ for(i in 1:countcoords) {
   
 }
 
-mat
+
 write.xlsx(mat, sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year))
 
 # Assign plot fragmentation function to variables

@@ -19,15 +19,25 @@ Sexton <- function(Year, Threshold){
   downloadPR(pr, Year, dir, log = NULL,
              baseURL = "ftp://ftp.glcf.umd.edu/glcf/LandsatTreecover/WRS2/")
     
+  
+  # Create names for unpacking
+  p_filename <- sprintf("%03d", pr$PATH)
+  r_filename <- sprintf("%03d", pr$ROW)
+  pr_filename <- sprintf("p%sr%s_TC_%s.tif", p_filename, r_filename, Year)
+  
+  # create list of extraction map
+  x <- list.files(sprintf('%s/%s',dir,'extract_sexton/'), full.names=FALSE)
+  
   # Unpack VCF data
-  unpackVCF(pr=pr, year = Year, searchDir=dir, dir=sprintf('%s/%s',dir,'extract_sexton/'))
-  x <- list.files(sprintf('%s/%s',dir,'extract_sexton/'), full.names=TRUE)
+  if (pr_filename %in% x){
+    print("File allready exsist, no need for unpacking")
+  } else {
+    unpackVCF(pr=pr, year = Year, searchDir=dir, dir=sprintf('%s/%s',dir,'extract_sexton/'))
+    
+  }
   
   # Load data into R environment
-  
-  # filename <- sprintf('%s/%s%s', dir, urlP, urlF)
-  
-  Raster <- raster(x[1])
+  Raster <- raster(sprintf("data/extract_sexton/%s" , pr_filename))
   
   # Masking the Raster to the buffer area
   transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 
@@ -42,7 +52,7 @@ Sexton <- function(Year, Threshold){
   Buffer_Crop[Buffer_Crop > 100] <- NA
   
   # Clear directory to prevent extraction errors
-  unlink("data/extract_sexton/*.tif", recursive = FALSE)
+  # unlink("data/extract_sexton/*.tif", recursive = FALSE)
   
   return (Buffer_Crop)
   

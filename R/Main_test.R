@@ -180,8 +180,9 @@ for(i in 1:countcoords) {
   
 }
 
-
-write.xlsx(mat, sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year))
+# write data to excel
+write.xlsx(mat, file = sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Sexton")
+write.xlsx(mat1, sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Hansen", append = T)
 
 # Assign plot fragmentation function to variables
 plot_Sexton <- SDM_plot(S)

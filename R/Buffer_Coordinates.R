@@ -5,7 +5,7 @@ Buffer_Point <- function(Countrycode, BufferDistance) {
   
   NeedUTMOutput <- F #Set to True if used to convert it to UTM.
   
-  CountryShape <- getData('GADM', country = 'CRI', level=1)
+  CountryShape <- getData('GADM', country = Countrycode, level=1)
   coordsys <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
   spTransform(CountryShape, coordsys)
   Spat <- SpatialPoints(data.frame(x = mydata$x[1 + j], y = mydata$y[1 + j]), proj4string = CRS(proj4string(CountryShape)))
@@ -57,7 +57,7 @@ Buffer_Point <- function(Countrycode, BufferDistance) {
 }
 
 
-plot(CountryShape)
-plot(BufferWGS, add=TRUE, col = "red")
-Spat
-CountryShape
+#plot(CountryShape)
+#plot(BufferWGS, add=TRUE, col = "red")
+#Spat
+#CountryShape

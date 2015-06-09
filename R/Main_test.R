@@ -9,16 +9,16 @@
 
 ### Install packages if required.
 if (!require(SDMTools)) install.packages('SDMTools')
+if (!require(xlsx)) install.packages('xlsx')
 if (!require(gfcanalysis)) install.packages('gfcanalysis')
-if (!require(rgdal)) install.packages('xlsx')
 if (!require(rgdal)) install.packages('rgdal')
 if (!require(rgeos)) install.packages('rgeos')
 if (!require(sp)) install.packages('sp')
-if (!require(raster)) install.packages('raster')
 if (!require(spatstat)) install.packages('spatstat')
 if (!require(devtools)) install.packages("devtools")
-if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
-devtools::install_github('jorndallinga/VCF')
+# if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
+devtools::install_github('JornDallinga/VCF')
+install.packages('raster')
 
 ### Access package libraries
 library (SDMTools)
@@ -31,9 +31,10 @@ library (devtools)
 library (VCF)
 library (plyr)
 library (xlsx)
+library (raster)
 
 ###------------------------------------- Source Scripts ----------------------------------
-source("R/BufferRandomPointsInCountry.R")
+#source("R/BufferRandomPointsInCountry.R")
 source("R/Buffer_Coordinates.R")
 source("R/Sexton.R")
 source("R/Hansen.R")
@@ -70,7 +71,7 @@ if (file.exists('extract_hansen')){
 ###------------------------------------- Set variables -----------------------------------
 ### Set variables by user
 Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
-Year <- 2000              # Only applies to Sexton script
+Year <- 2005              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 70           # Cells with values greater than threshold are classified as 'Forest'
 

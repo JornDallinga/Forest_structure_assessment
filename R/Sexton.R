@@ -17,7 +17,7 @@ Sexton <- function(Year, Threshold){
   
   # Download data
   downloadPR(pr, Year, dir, log = NULL,
-             baseURL = "ftp://ftp.glcf.umd.edu/glcf/LandsatTreecover/WRS2/")
+             baseURL = "ftp://ftp.glcf.umd.edu/glcf/")
     
   
   # Create names for unpacking

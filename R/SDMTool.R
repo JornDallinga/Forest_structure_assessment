@@ -38,13 +38,13 @@ SDM_function <- function(S){
   return (c1.data)
 }
 
-c1.data
-nr_patches
-nr_patches <- (ccl.mat$patchID)
+#c1.data
+#nr_patches
+#nr_patches <- (ccl.mat$patchID)
 
 
-c1.data
-c1.data[1:2]
+#c1.data
+#c1.data[1:2]
 
-write.xlsx(c1.data, sprintf("output/test.xlsx"), sheetName = , append = TRUE)
-write.xlsx(c1.data, sprintf("output/test.xlsx"), col.names = F, row.names = F)
+#write.xlsx(c1.data, sprintf("output/test.xlsx"), sheetName = , append = TRUE)
+#write.xlsx(c1.data, sprintf("output/test.xlsx"), col.names = F, row.names = F)

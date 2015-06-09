@@ -9,6 +9,7 @@
 
 ### Install packages if required.
 if (!require(SDMTools)) install.packages('SDMTools')
+if (!require(xlsx)) install.packages('xlsx')
 if (!require(gfcanalysis)) install.packages('gfcanalysis')
 if (!require(rgdal)) install.packages('xlsx')
 if (!require(rgdal)) install.packages('rgdal')
@@ -18,7 +19,7 @@ if (!require(raster)) install.packages('raster')
 if (!require(spatstat)) install.packages('spatstat')
 if (!require(devtools)) install.packages("devtools")
 if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
-devtools::install_github('dutri001/VCF')
+devtools::install_github('JornDallinga/VCF')
 
 ### Access package libraries
 library (SDMTools)

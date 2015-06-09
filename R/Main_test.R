@@ -16,9 +16,9 @@ if (!require(rgeos)) install.packages('rgeos')
 if (!require(sp)) install.packages('sp')
 if (!require(spatstat)) install.packages('spatstat')
 if (!require(devtools)) install.packages("devtools")
-# if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
+if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
 devtools::install_github('JornDallinga/VCF')
-install.packages('raster')
+
 
 ### Access package libraries
 library (SDMTools)
@@ -31,12 +31,13 @@ library (devtools)
 library (VCF)
 library (plyr)
 library (xlsx)
-library (raster)
+
 
 ###------------------------------------- Source Scripts ----------------------------------
-#source("R/BufferRandomPointsInCountry.R")
+
 source("R/Buffer_Coordinates.R")
 source("R/Sexton.R")
+source("R/Kim.R")
 source("R/Hansen.R")
 source("R/SDMTool.R")
 source("R/SDM_plot.R")

@@ -51,9 +51,6 @@ Sexton <- function(Year, Threshold){
   Buffer_Crop[Buffer_Crop >= Threshold] <- 1
   Buffer_Crop[Buffer_Crop > 100] <- NA
   
-  # Clear directory to prevent extraction errors
-  # unlink("data/extract_sexton/*.tif", recursive = FALSE)
-  
   return (Buffer_Crop)
   
 }  

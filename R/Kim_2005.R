@@ -1,6 +1,6 @@
 
 
-Kim <- function(Year){
+Kim_2005 <- function(Year){
   # Get buffer locations
   
   buffer <- readRDS(file = "Data/BufferWGS.rds", refhook = NULL)
@@ -37,8 +37,8 @@ Kim <- function(Year){
   Buffer_Crop <- crop(Masked_Raster, transform_buffer)
   
   # Set values and a value replacement function
-  Buffer_Crop[Buffer_Crop < 5 | Buffer_Crop > 20] <- 0
-  Buffer_Crop[Buffer_Crop > 10 & Buffer_Crop < 20] <- 1
+  Buffer_Crop[Buffer_Crop < 5 | Buffer_Crop == 19 | Buffer_Crop > 91] <- 0
+  Buffer_Crop[Buffer_Crop == 11 & Buffer_Crop == 91] <- 1
   
   return (Buffer_Crop)
   

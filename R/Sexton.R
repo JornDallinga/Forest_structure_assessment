@@ -17,7 +17,7 @@ Sexton <- function(Year, Threshold){
   extract <- 'extract_sexton/'
   
   # Download data
-  Sys.sleep(5)
+  
   downloadPR(pr, Year, dir, log = NULL,
              baseURL = "ftp://ftp.glcf.umd.edu/glcf/")
     
@@ -30,26 +30,25 @@ Sexton <- function(Year, Threshold){
   # create list of extraction map
   x <- list.files(sprintf('%s/%s',dir,extract), full.names=FALSE)
   
-  
   # Unpack VCF data
   Unpack_VCF(pr_filename, x, extract, Year, pr, dir)
   
   # Load data into R environment
   Raster <- raster(sprintf("%s%s%s", dir, extract, pr_filename))
   
-  # Masking the Raster to the buffer area
-  transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 
-  Masked_Raster <- mask(Raster, transform_buffer, progress = "window")
-  
   # Cropping masked extent
-  Buffer_Crop <- crop(Masked_Raster, transform_buffer)
+  transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 
+  Crop_Raster <- crop(Raster, transform_buffer)
+  
+  # Masking the Raster to the buffer area
+  Masked_Raster <- mask(Crop_Raster, transform_buffer, progress = "window")
   
   # Set values and a value replacement function
-  Buffer_Crop[Buffer_Crop < Threshold] <- 0
-  Buffer_Crop[Buffer_Crop >= Threshold] <- 1
-  Buffer_Crop[Buffer_Crop > 100] <- NA
+  Masked_Raster[Masked_Raster < Threshold] <- 0
+  Masked_Raster[Masked_Raster >= Threshold] <- 1
+  Masked_Raster[Masked_Raster > 100] <- NA
   
-  return (Buffer_Crop)
+  return (Masked_Raster)
   
 }  
 

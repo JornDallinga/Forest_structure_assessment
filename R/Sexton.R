@@ -14,8 +14,10 @@ Sexton <- function(Year, Threshold){
   buffer <- readRDS(file = "Data/BufferWGS.rds", refhook = NULL)
   pr <- getPR(buffer)
   dir <- "data/" # If doesnt work add "./"
+  extract <- 'extract_sexton/'
   
   # Download data
+  Sys.sleep(5)
   downloadPR(pr, Year, dir, log = NULL,
              baseURL = "ftp://ftp.glcf.umd.edu/glcf/")
     
@@ -26,22 +28,18 @@ Sexton <- function(Year, Threshold){
   pr_filename <- sprintf("p%sr%s_TC_%s.tif", p_filename, r_filename, Year)
   
   # create list of extraction map
-  x <- list.files(sprintf('%s/%s',dir,'extract_sexton/'), full.names=FALSE)
+  x <- list.files(sprintf('%s/%s',dir,extract), full.names=FALSE)
+  
   
   # Unpack VCF data
-  if (pr_filename %in% x){
-    print("File allready exsist, no need for unpacking")
-  } else {
-    unpackVCF(pr=pr, year = Year, searchDir=dir, dir=sprintf('%s/%s',dir,'extract_sexton/'))
-    
-  }
+  Unpack_VCF(pr_filename, x, extract, Year, pr, dir)
   
   # Load data into R environment
-  Raster <- raster(sprintf("data/extract_sexton/%s" , pr_filename))
+  Raster <- raster(sprintf("%s%s%s", dir,extract, pr_filename))
   
   # Masking the Raster to the buffer area
   transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 
-  Masked_Raster <- mask(Raster, transform_buffer)
+  Masked_Raster <- mask(Raster, transform_buffer, progress = "window")
   
   # Cropping masked extent
   Buffer_Crop <- crop(Masked_Raster, transform_buffer)

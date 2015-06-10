@@ -37,12 +37,15 @@ library (xlsx)
 
 source("R/Buffer_Coordinates.R")
 source("R/Sexton.R")
+source("R/colnames.R")
+source("R/Unpack_VCF.R")
 source("R/Kim_1990.R")
 source("R/Kim_2000.R")
 source("R/Kim_2005.R")
 source("R/Hansen.R")
 source("R/SDMTool.R")
 source("R/SDM_plot.R")
+
 
 ###------------------------------------- Create folders ----------------------------------
 
@@ -60,10 +63,10 @@ if (file.exists('output')){
 }
 
 ## Output folder
-if (file.exists('extract_sexton')){
-} else {
-  dir.create(file.path('data/extract_sexton'), showWarnings = FALSE)
-}
+#if (file.exists('extract_sexton')){
+#} else {
+#  dir.create(file.path('data/extract_sexton'), showWarnings = FALSE)
+#}
 
 ## Output folder
 if (file.exists('extract_hansen')){
@@ -78,7 +81,7 @@ Year <- 2000              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 70           # Cells with values greater than threshold are classified as 'Forest'
 
-
+setInternet2(use = TRUE) 
 
 ###------------------------------------- Create Matrix for results ----------------------
 
@@ -94,17 +97,7 @@ mat <- matrix(, nrow = countcoords, ncol = 44)
 mat <- data.frame(mat)
 
 
-
-##naming first 5 columns
-#colnames(SDMS) -> SDMS_colnames
-#names(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMS_colnames)
-
 #adding names of the buffers to the matrix
-#for(i in 1:countcoords) {
-#  nam <- paste(Countrycode, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
-#  mat[1] <- nam
-#}
-
 
 for(i in 1:countcoords) {
   nam <- paste(Countrycode)
@@ -129,7 +122,7 @@ for(i in 1:countcoords) {
   
   ###------------------------------------ Run functions -----------------------------------
   
-  Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the output folder
+  Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the data folder
   
   ## Analysis with sexton data
   if (Year == 1990){
@@ -143,10 +136,12 @@ for(i in 1:countcoords) {
     SDMS_2000 <- SDM_function(S)
     SDMS_col <- ncol(SDMS_2000) + 6
     mat[i, 7:SDMS_col] <- SDMS_2000
+    
     H <- Hansen(Threshold)
     SDMH <- SDM_function(H)
     SDMH_col <- ncol(SDMH) + 6
     mat1[i, 7:SDMH_col] <- SDMH
+    
     K_2000 <- Kim_2000(Year = 20002005)
     SDMK_2000 <- SDM_function(K_2000)
     SDMK_col <- ncol(SDMK_2000) + 6
@@ -158,6 +153,7 @@ for(i in 1:countcoords) {
     SDMS_2005 <- SDM_function(S)
     SDMS_col <- ncol(SDMS_2005) + 6
     mat4[i, 7:SDMS_col] <- SDMS_2005
+    
     K_2005 <- Kim_2005(Year = 20002005)
     SDMK_2005 <- SDM_function(K_2005)
     SDMK_col <- ncol(SDMK_2005) + 6
@@ -165,36 +161,12 @@ for(i in 1:countcoords) {
   } else {
     print("No valid year")
   }
-  
-  
-  ## Species Distribution Modelling for both Sexton and Hansen data
-  #SDMS <- SDM_function(S)
-  
-  #Adding Sexton results to the matrix
-  #SDMS_col <- ncol(SDMS) + 6
-  #mat[i, 7:SDMS_col] <- SDMS
-  
-  
-  ## Global Forest Cover Analysis with Hansen data
-  #H <- Hansen(Threshold)
-  
-  ## Species Distribution Modelling for both Sexton and Hansen data
-  #SDMH <- SDM_function(H)
-  
-  #Adding Hansen results to the matrix
-  #SDMH_col <- ncol(SDMH) + 6
-  #mat1[i, 7:SDMH_col] <- SDMH
-  
-  
-  #New_S <-projectRaster(S, H, res, crs, method="ngb", 
-  #                      alignOnly=FALSE, over=FALSE, filename="")
-  
+
   # Clear directory to prevent extraction errors
   unlink("data/BufferWGS.rds", recursive = FALSE)
   
   ## adding column names based on output SDMTools function
-  if (j < 1 & Year == 1990){
-    
+  if (j < 1 & Year == 1990) {
     colnames(SDMK_1990) -> K_1990_colnames
     names(mat3) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", K_1990_colnames)
   } else if (j < 1 & Year == 2000) {
@@ -204,7 +176,7 @@ for(i in 1:countcoords) {
     names(mat2) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", K_2000_colnames)
     colnames(SDMH) -> SDMH_colnames
     names(mat1) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", SDMH_colnames)
-  } else if (j < 1 & Year == 2005){
+  } else if (j < 1 & Year == 2005) {
     colnames(SDMS_2005) -> SDMS_2005_colnames
     names(mat4) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", SDMS_2005_colnames)
     colnames(SDMK_2005) -> K_2005_colnames
@@ -212,6 +184,7 @@ for(i in 1:countcoords) {
   } else {
     
   }
+  
 
   ## adding Coordinates to the matrix
   mat[i, count] <- mydata$x[1 + j]

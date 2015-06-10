@@ -35,7 +35,7 @@ Sexton <- function(Year, Threshold){
   Unpack_VCF(pr_filename, x, extract, Year, pr, dir)
   
   # Load data into R environment
-  Raster <- raster(sprintf("%s%s%s", dir,extract, pr_filename))
+  Raster <- raster(sprintf("%s%s%s", dir, extract, pr_filename))
   
   # Masking the Raster to the buffer area
   transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 

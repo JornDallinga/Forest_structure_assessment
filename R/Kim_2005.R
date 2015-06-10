@@ -17,13 +17,13 @@ Kim_2005 <- function(Year){
   pr_filename <- sprintf("p%sr%s_FCC_%s_CM.tif", p_filename, r_filename, Year)
   
   # create list of extraction map
-  x <- list.files(sprintf('%s/%s',dir, extract), full.names=FALSE)
+  x <- list.files(sprintf('%s/%s', dir, extract), full.names=FALSE)
 
   # Unpack VCF data
   Unpack_VCF(pr_filename, x, extract, Year, pr, dir)
   
   # Load data into R environment
-  Raster <- raster(sprintf("data/%s%s", extract, pr_filename))
+  Raster <- raster(sprintf("%s%s%s", dir, extract, pr_filename))
   
   # Masking the Raster to the buffer area
   transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 

@@ -9,7 +9,7 @@ Kim_2000 <- function(Year){
   extract <- 'extract_Kim_2000/'
   
   # Download data
-  downloadPR(pr, Year , dir, log = NULL, baseURL = "ftp://ftp.glcf.umd.edu/glcf/")
+  downloadPR(pr, Year, dir, log = NULL, baseURL = "ftp://ftp.glcf.umd.edu/glcf/")
   
   # Create names for unpacking
   p_filename <- sprintf("%03d", pr$PATH)
@@ -23,7 +23,7 @@ Kim_2000 <- function(Year){
   Unpack_VCF(pr_filename, x, extract, Year, pr, dir)
   
   # Load data into R environment
-  Raster <- raster(sprintf("%s%s%s", dir,extract, pr_filename))
+  Raster <- raster(sprintf("%s%s%s", dir, extract, pr_filename))
   
   # Masking the Raster to the buffer area
   transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 

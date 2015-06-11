@@ -48,7 +48,13 @@ Sexton <- function(Year, Threshold){
   Masked_Raster[Masked_Raster >= Threshold] <- 1
   Masked_Raster[Masked_Raster > 100] <- NA
   
-  return (Masked_Raster)
+  
+  Mask_proj <- projectRaster(Masked_Raster, crs = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+  
+  test_Sexton <- writeRaster(Mask_proj, filename = "output/sexton.tif", overwrite = TRUE)
+  kml(test_Sexton, colour = "RED")
+  
+  return (Mask_proj)
   
 }  
 

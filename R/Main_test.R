@@ -79,7 +79,7 @@ if (file.exists('extract_hansen')){
 Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 Year <- 2000              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
-Threshold <- 70           # Cells with values greater than threshold are classified as 'Forest'
+Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
 setInternet2(use = TRUE) 
 
@@ -229,8 +229,8 @@ if (Year == 1990){
 plot_Sexton <- SDM_plot(S)
 plot_Hansen <- SDM_plot(H)
 
-New_proj_Sexton <-projectRaster(plot_Sexton, plot_Hansen, res, crs, method="ngb", 
-                                alignOnly=FALSE, over=FALSE, filename="")
+#New_proj_Sexton <-projectRaster(plot_Sexton, plot_Hansen, res, crs, method="ngb", 
+#                                alignOnly=FALSE, over=FALSE, filename="")
 
 png(filename="output/Fragmentation.png")
 par(mfrow=c(2,2))

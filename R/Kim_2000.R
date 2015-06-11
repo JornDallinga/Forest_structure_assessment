@@ -25,17 +25,24 @@ Kim_2000 <- function(Year){
   # Load data into R environment
   Raster <- raster(sprintf("%s%s%s", dir, extract, pr_filename))
   
-  # Masking the Raster to the buffer area
-  transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 
-  Masked_Raster <- mask(Raster, transform_buffer, progress = "window")
-  
   # Cropping masked extent
-  Buffer_Crop <- crop(Masked_Raster, transform_buffer)
+  transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 
+  Crop_Raster <- crop(Raster, transform_buffer)
+  
+  # Masking the Raster to the buffer area
+  Masked_Raster <- mask(Crop_Raster, transform_buffer, progress = "window")
   
   # Set values and a value replacement function
-  Buffer_Crop[Buffer_Crop < 5 | Buffer_Crop > 20] <- 0
-  Buffer_Crop[Buffer_Crop > 10 & Buffer_Crop < 20] <- 1
+  Masked_Raster[Masked_Raster < 10 | Masked_Raster >= 20] <- 0
+  Masked_Raster[Masked_Raster > 10 & Masked_Raster < 20] <- 1
   
-  return (Buffer_Crop)
+  # Reproject to 
+  Mask_proj <- projectRaster(Masked_Raster, crs = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+  
+  # write to kml
+  test_Kim_2000 <- writeRaster(Mask_proj, filename = "output/Kim_2000.tif", overwrite = TRUE)
+  kml(test_Kim_2000, colour = "RED")
+  
+  return (Mask_proj)
   
 }

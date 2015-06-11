@@ -30,6 +30,10 @@ Hansen <- function(Threshold){
   ## Set mask over tresholded gfc, size of buffer
   mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
   
+  mask_gfc <- mask(gfc_extract$treecover2000, aoi)
+  
+  test_Hansen <- writeRaster(mask_gfc, filename = "output/hansen.tif", overwrite = T)
+  kml(test_Hansen, colour = "GREEN")
   
   return (mask_gfc)
 }

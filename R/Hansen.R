@@ -28,12 +28,27 @@ Hansen <- function(Threshold){
                                    filename="data/extract_hansen/GFC_extract_thresholded.tif", overwrite=TRUE)
   
   ## Set mask over tresholded gfc, size of buffer
+  #mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
+  
   mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
   
-  mask_gfc <- mask(gfc_extract$treecover2000, aoi)
+  mask_gfc_loss <- mask(gfc_thresholded$lossyear, aoi)
+  
+  mask_gfc_gain <- mask(gfc_thresholded$gain, aoi)
+  
+  gfc_2010_fc <- 
+  
+  ###
+
+  test <- list.files(path = "data/", pattern="Hansen_GFC2013_gain*")
+  Hansen_Loss <- raster(sprintf("data/%s", test))
+  Hansen_Gain <- readRDS(file = 'data/BufferWGS.rds', refhook = NULL)
+  aoi <- readRDS(file = 'data/BufferWGS.rds', refhook = NULL)
   
   test_Hansen <- writeRaster(mask_gfc, filename = "output/hansen.tif", overwrite = T)
   kml(test_Hansen, colour = "GREEN")
+  
+  
   
   return (mask_gfc)
 }

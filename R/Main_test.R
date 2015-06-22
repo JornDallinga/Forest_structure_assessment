@@ -46,6 +46,7 @@ source("R/Hansen.R")
 source("R/SDMTool.R")
 source("R/SDM_plot.R")
 source("R/Write_Excel_RDS.R")
+source("R/Write_Metadata.R")
 
 
 ###------------------------------------- Create folders ----------------------------------
@@ -77,10 +78,12 @@ if (file.exists('extract_hansen')){
 
 ###------------------------------------- Set variables -----------------------------------
 ### Set variables by user
-Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
-Year <- 2012              # Only applies to Sexton script
+#Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
+#Chronosequence <- NULL    # Chronosequence within the country
+Year <- 1990              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 70           # Cells with values greater than threshold are classified as 'Forest'
+
 
 setInternet2(use = TRUE) 
 
@@ -92,68 +95,39 @@ countcoords <- nrow(mydata)
 
 
 #creating empty matrix
-mat <- matrix(, nrow = countcoords, ncol = 44)
+mat <- matrix(, nrow = countcoords, ncol = 45)
 
 #creating empty dataframe
 mat <- data.frame(mat)
 
-
-#adding names of the buffers to the matrix
-
-for(i in 1:countcoords) {
-  nam <- paste(Countrycode)
-  nam1 <- paste(Year)
-  nam2 <- paste(BufferDistance)
-  nam3 <- paste(Threshold)
-  
-  mat[1] <- nam
-  mat[2] <- nam1
-  mat[3] <- nam2
-  mat[4] <- nam3
-}
-
+# Copying data frames to equal the amount of databases
 mat -> mat1 -> mat2 -> mat3 -> mat4 -> mat5 -> mat6
 
+
 ###------------------------------------- Create loops -----------------------------------
-count <- 5
+count <- 1
 j <- 0
 
 
 for(i in 1:countcoords) {
   
-  
+  ## reading country code and chronosequence from mydata
+  Countrycode <- levels(mydata$Country[1 + j])[mydata$Country[1 + j]]
+  Chronosequence <- levels(mydata$Chronosequence[1 + j])[mydata$Chronosequence[1 + j]]
+
   ###------------------------------------ Run functions -----------------------------------
-  
+
+  ##
   Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the data folder
   
   ## Analysis Forest data
-  Forest_Analysis(Year)
+  Forest_Analysis(Year = Year, Countrycode = Countrycode, Chronosequence = Chronosequence, BufferDistance = BufferDistance, Threshold = Threshold)
   
   # Clear directory to prevent extraction errors
   unlink("data/BufferWGS.rds", recursive = FALSE)
 
-  ## adding Coordinates to the matrix
-  mat[i, count] <- mydata$x[1 + j]
-  mat1[i, count] <- mydata$x[1 + j]
-  mat2[i, count] <- mydata$x[1 + j]
-  mat3[i, count] <- mydata$x[1 + j]
-  mat4[i, count] <- mydata$x[1 + j]
-  mat5[i, count] <- mydata$x[1 + j]
-  mat6[i, count] <- mydata$x[1 + j]
-  count <- count + 1
-  mat[i, count] <- mydata$y[1 + j]
-  mat1[i, count] <- mydata$y[1 + j]
-  mat2[i, count] <- mydata$y[1 + j]
-  mat3[i, count] <- mydata$y[1 + j]
-  mat4[i, count] <- mydata$y[1 + j]
-  mat5[i, count] <- mydata$y[1 + j]
-  mat6[i, count] <- mydata$x[1 + j]
-
-
   ## assigning looping variables
   j <- 1 + j
-  count <- count - 1
-
   
   ## write to excel and RDS and assign colunm names
   if (i == countcoords){

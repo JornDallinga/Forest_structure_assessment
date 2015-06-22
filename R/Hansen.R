@@ -8,7 +8,7 @@
 
 #-------------------------------------- Function -----------------------------------
 
-Hansen <- function(Threshold){
+Hansen <- function(Threshold, year = Year){
   ## Create variable Area Of Interest (aio)
   aoi <- readRDS(file = 'data/BufferWGS.rds', refhook = NULL)
     
@@ -27,28 +27,34 @@ Hansen <- function(Threshold){
   gfc_thresholded <- threshold_gfc(gfc_extract, Threshold=Threshold, 
                                    filename="data/extract_hansen/GFC_extract_thresholded.tif", overwrite=TRUE)
   
-  ## Set mask over tresholded gfc, size of buffer
-  #mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
-  
-  mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
-  
-  mask_gfc_loss <- mask(gfc_thresholded$lossyear, aoi)
-  
-  mask_gfc_gain <- mask(gfc_thresholded$gain, aoi)
-  
-  gfc_2010_fc <- 
-  
-  ###
+  # Set mask over tresholded gfc, size of buffer
 
-  test <- list.files(path = "data/", pattern="Hansen_GFC2013_gain*")
-  Hansen_Loss <- raster(sprintf("data/%s", test))
-  Hansen_Gain <- readRDS(file = 'data/BufferWGS.rds', refhook = NULL)
-  aoi <- readRDS(file = 'data/BufferWGS.rds', refhook = NULL)
+  if (year == 2000){
+    ## create forest cover mask year 2000
+    mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
+  } else if (year == 2012){
+    ## create forest cover loss map 2012
+    mask_gfc_loss <- mask(gfc_thresholded$lossyear, aoi)
+    #### Set values and a value replacement function
+    mask_gfc_loss[mask_gfc_loss > 0 & mask_gfc_loss < 13]  <- 1
+    
+    ## create forest cover gain map 2012
+    mask_gfc_gain <- mask(gfc_thresholded$gain, aoi)
+    
+    ## create forest cover lossgain 2012
+    mask_gfc_lossgain <- mask(gfc_thresholded$lossgain, aoi)
+    
+    ## Create forest cover map 2012
+    mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
+    mask_gfc <- (((mask_gfc - mask_gfc_loss) + mask_gfc_gain) + mask_gfc_lossgain)
+    
+  } else {
+    warning("invalid year")
+  }
+
   
-  test_Hansen <- writeRaster(mask_gfc, filename = "output/hansen.tif", overwrite = T)
-  kml(test_Hansen, colour = "GREEN")
-  
-  
+  # test_Hansen <- writeRaster(mask_gfc, filename = "output/hansen.tif", overwrite = T)
+  # kml(test_Hansen, colour = "GREEN")
   
   return (mask_gfc)
 }

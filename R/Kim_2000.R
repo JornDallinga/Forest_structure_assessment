@@ -40,8 +40,8 @@ Kim_2000 <- function(Year){
   Mask_proj <- projectRaster(Masked_Raster, crs = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
   
   # write to kml
-  test_Kim_2000 <- writeRaster(Mask_proj, filename = "output/Kim_2000.tif", overwrite = TRUE)
-  kml(test_Kim_2000, colour = "RED")
+  #test_Kim_2000 <- writeRaster(Mask_proj, filename = "output/Kim_2000.tif", overwrite = TRUE)
+  #kml(test_Kim_2000, colour = "RED")
   
   return (Mask_proj)
   

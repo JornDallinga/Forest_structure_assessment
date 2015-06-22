@@ -1,5 +1,10 @@
 To DO list:
 
+- Hansen et al data downloading should be overwritten when a different country is assessed. Because the read function reads the Hansen_GFC2013_gain etc arguments. And not the tiles
+
 - Create plots for each location and each year for every index
-- Create hansen et al 2013 forest cover map
+- Create hansen et al 2012 forest cover map
+Done
+
 - fix bug from sexton et al when project is changed
+Done

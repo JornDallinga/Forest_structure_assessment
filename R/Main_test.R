@@ -37,7 +37,7 @@ library (xlsx)
 
 source("R/Buffer_Coordinates.R")
 source("R/Sexton.R")
-source("R/colnames.R")
+source("R/Forest_Analysis.R")
 source("R/Unpack_VCF.R")
 source("R/Kim_1990.R")
 source("R/Kim_2000.R")
@@ -45,6 +45,7 @@ source("R/Kim_2005.R")
 source("R/Hansen.R")
 source("R/SDMTool.R")
 source("R/SDM_plot.R")
+source("R/Write_Excel_RDS.R")
 
 
 ###------------------------------------- Create folders ----------------------------------
@@ -77,9 +78,9 @@ if (file.exists('extract_hansen')){
 ###------------------------------------- Set variables -----------------------------------
 ### Set variables by user
 Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
-Year <- 2000              # Only applies to Sexton script
+Year <- 2012              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
-Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
+Threshold <- 70           # Cells with values greater than threshold are classified as 'Forest'
 
 setInternet2(use = TRUE) 
 
@@ -111,11 +112,12 @@ for(i in 1:countcoords) {
   mat[4] <- nam3
 }
 
-mat -> mat1 -> mat2 -> mat3 -> mat4 -> mat5
+mat -> mat1 -> mat2 -> mat3 -> mat4 -> mat5 -> mat6
 
 ###------------------------------------- Create loops -----------------------------------
 count <- 5
 j <- 0
+
 
 for(i in 1:countcoords) {
   
@@ -124,67 +126,11 @@ for(i in 1:countcoords) {
   
   Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the data folder
   
-  ## Analysis with sexton data
-  if (Year == 1990){
-    K_1990 <- Kim_1990(Year = 19902000)
-    SDMK_1990 <- SDM_function(K_1990)
-    SDMK_col <- ncol(SDMK_1990) + 6
-    mat3[i, 7:SDMK_col] <- SDMK_col
-    
-  } else if (Year == 2000){
-    S <- Sexton(Year, Threshold)
-    SDMS_2000 <- SDM_function(S)
-    SDMS_col <- ncol(SDMS_2000) + 6
-    mat[i, 7:SDMS_col] <- SDMS_2000
-    
-    H <- Hansen(Threshold)
-    SDMH <- SDM_function(H)
-    SDMH_col <- ncol(SDMH) + 6
-    mat1[i, 7:SDMH_col] <- SDMH
-    
-    K_2000 <- Kim_2000(Year = 20002005)
-    SDMK_2000 <- SDM_function(K_2000)
-    SDMK_col <- ncol(SDMK_2000) + 6
-    mat2[i, 7:SDMK_col] <- SDMK_2000
-    
-    
-  } else if (Year == 2005){
-    S <- Sexton(Year, Threshold)
-    SDMS_2005 <- SDM_function(S)
-    SDMS_col <- ncol(SDMS_2005) + 6
-    mat4[i, 7:SDMS_col] <- SDMS_2005
-    
-    K_2005 <- Kim_2005(Year = 20002005)
-    SDMK_2005 <- SDM_function(K_2005)
-    SDMK_col <- ncol(SDMK_2005) + 6
-    mat5[i, 7:SDMK_col] <- SDMK_2005
-  } else {
-    print("No valid year")
-  }
-
+  ## Analysis Forest data
+  Forest_Analysis(Year)
+  
   # Clear directory to prevent extraction errors
   unlink("data/BufferWGS.rds", recursive = FALSE)
-  
-  ## adding column names based on output SDMTools function
-  if (j < 1 & Year == 1990) {
-    colnames(SDMK_1990) -> K_1990_colnames
-    names(mat3) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", K_1990_colnames)
-  } else if (j < 1 & Year == 2000) {
-    colnames(SDMS_2000) -> SDMS_2000_colnames
-    names(mat) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", SDMS_2000_colnames)
-    colnames(SDMK_2000) -> K_2000_colnames
-    names(mat2) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", K_2000_colnames)
-    colnames(SDMH) -> SDMH_colnames
-    names(mat1) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", SDMH_colnames)
-  } else if (j < 1 & Year == 2005) {
-    colnames(SDMS_2005) -> SDMS_2005_colnames
-    names(mat4) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", SDMS_2005_colnames)
-    colnames(SDMK_2005) -> K_2005_colnames
-    names(mat5) <- c("Country", "Year", "Buffer", "Threshold", "x_coordinates", "y_coordinates", K_2005_colnames)
-  } else {
-    
-  }
-  
 
   ## adding Coordinates to the matrix
   mat[i, count] <- mydata$x[1 + j]
@@ -193,6 +139,7 @@ for(i in 1:countcoords) {
   mat3[i, count] <- mydata$x[1 + j]
   mat4[i, count] <- mydata$x[1 + j]
   mat5[i, count] <- mydata$x[1 + j]
+  mat6[i, count] <- mydata$x[1 + j]
   count <- count + 1
   mat[i, count] <- mydata$y[1 + j]
   mat1[i, count] <- mydata$y[1 + j]
@@ -200,29 +147,23 @@ for(i in 1:countcoords) {
   mat3[i, count] <- mydata$y[1 + j]
   mat4[i, count] <- mydata$y[1 + j]
   mat5[i, count] <- mydata$y[1 + j]
-  
+  mat6[i, count] <- mydata$x[1 + j]
+
+
   ## assigning looping variables
   j <- 1 + j
   count <- count - 1
+
   
+  ## write to excel and RDS and assign colunm names
+  if (i == countcoords){
+    Write_fun(Year)
+    print("Done")
+  } else {
+    print("looping again")
+  }
 }
 
-# write data to excel
-if (Year == 1990){
-  write.xlsx(mat3, file = sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Kim")
-  
-} else if (Year == 2000){ 
-  write.xlsx(mat, file = sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Sexton")
-  write.xlsx(mat1, file = sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Hansen", append = T)
-  write.xlsx(mat2, file = sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Kim", append = T)
-  
-} else if (Year == 2005){ 
-  write.xlsx(mat4, file = sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Sexton")
-  write.xlsx(mat5, file = sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year), sheetName = "Kim", append = T)
-  
-} else {
-  print("cant write to excel")
-}
 
 
 # Assign plot fragmentation function to variables

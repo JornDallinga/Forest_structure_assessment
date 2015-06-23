@@ -38,6 +38,7 @@ library (xlsx)
 source("R/Buffer_Coordinates.R")
 source("R/Sexton.R")
 source("R/Forest_Analysis.R")
+source("R/Forest_cover.R")
 source("R/Unpack_VCF.R")
 source("R/Kim_1990.R")
 source("R/Kim_2000.R")
@@ -53,34 +54,17 @@ source("R/Write_Metadata.R")
 
 ### Create data and output folders if necessary 
 ## Data folder
-if (file.exists('data')){
-} else {
-  dir.create(file.path('data'), showWarnings = FALSE)  
-}
 
-## Output folder
-if (file.exists('output')){
-} else {
-  dir.create(file.path('output'), showWarnings = FALSE)
-}
+dir.create(file.path('data'), showWarnings = FALSE)
+dir.create(file.path('output'), showWarnings = FALSE)
+dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 
-## Output folder
-#if (file.exists('extract_sexton')){
-#} else {
-#  dir.create(file.path('data/extract_sexton'), showWarnings = FALSE)
-#}
-
-## Output folder
-if (file.exists('extract_hansen')){
-} else {
-  dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
-}
 
 ###------------------------------------- Set variables -----------------------------------
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 2012              # Only applies to Sexton script
+Year <- 2000              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
@@ -95,7 +79,7 @@ countcoords <- nrow(mydata)
 
 
 #creating empty matrix
-mat <- matrix(, nrow = countcoords, ncol = 45)
+mat <- matrix(, nrow = countcoords, ncol = 46)
 
 #creating empty dataframe
 mat <- data.frame(mat)
@@ -109,7 +93,19 @@ count <- 1
 j <- 0
 
 
+###------------------------------------- Run Script -----------------------------------
+
 for(i in 1:countcoords) {
+  
+  # create progress bar
+  pb <- winProgressBar(title = "progress bar", min = 0,
+                       max = countcoords, width = 300)
+
+  Sys.sleep(0.1)
+  setWinProgressBar(pb, i, title=paste( round(i/countcoords*100, 0),
+                                          "% done"))
+
+  
   
   ## reading country code and chronosequence from mydata
   Countrycode <- levels(mydata$Country[1 + j])[mydata$Country[1 + j]]
@@ -117,7 +113,7 @@ for(i in 1:countcoords) {
 
   ###------------------------------------ Run functions -----------------------------------
 
-  ##
+  ## Create buffer around point
   Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the data folder
   
   ## Analysis Forest data
@@ -133,9 +129,12 @@ for(i in 1:countcoords) {
   if (i == countcoords){
     Write_fun(Year)
     print("Done")
+    close(pb)
   } else {
     print("looping again")
   }
+  
+
 }
 
 
@@ -146,8 +145,7 @@ for(i in 1:countcoords) {
 
 
 
-#####################
-## Testing area
+###------------------------------------- Testing area -----------------------------------
 
 # Assign plot fragmentation function to variables
 plot_Sexton <- SDM_plot(S)

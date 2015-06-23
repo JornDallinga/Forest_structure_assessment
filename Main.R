@@ -11,15 +11,14 @@
 if (!require(SDMTools)) install.packages('SDMTools')
 if (!require(xlsx)) install.packages('xlsx')
 if (!require(gfcanalysis)) install.packages('gfcanalysis')
-if (!require(rgdal)) install.packages('xlsx')
 if (!require(rgdal)) install.packages('rgdal')
 if (!require(rgeos)) install.packages('rgeos')
 if (!require(sp)) install.packages('sp')
-if (!require(raster)) install.packages('raster')
 if (!require(spatstat)) install.packages('spatstat')
 if (!require(devtools)) install.packages("devtools")
 if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
 devtools::install_github('JornDallinga/VCF')
+
 
 ### Access package libraries
 library (SDMTools)
@@ -33,13 +32,22 @@ library (VCF)
 library (plyr)
 library (xlsx)
 
+
 ###------------------------------------- Source Scripts ----------------------------------
-source("R/BufferRandomPointsInCountry.R")
+
 source("R/Buffer_Coordinates.R")
 source("R/Sexton.R")
+source("R/Forest_Analysis.R")
+source("R/Unpack_VCF.R")
+source("R/Kim_1990.R")
+source("R/Kim_2000.R")
+source("R/Kim_2005.R")
 source("R/Hansen.R")
 source("R/SDMTool.R")
 source("R/SDM_plot.R")
+source("R/Write_Excel_RDS.R")
+source("R/Write_Metadata.R")
+
 
 ###------------------------------------- Create folders ----------------------------------
 
@@ -57,10 +65,10 @@ if (file.exists('output')){
 }
 
 ## Output folder
-if (file.exists('extract_sexton')){
-} else {
-  dir.create(file.path('data/extract_sexton'), showWarnings = FALSE)
-}
+#if (file.exists('extract_sexton')){
+#} else {
+#  dir.create(file.path('data/extract_sexton'), showWarnings = FALSE)
+#}
 
 ## Output folder
 if (file.exists('extract_hansen')){
@@ -70,12 +78,14 @@ if (file.exists('extract_hansen')){
 
 ###------------------------------------- Set variables -----------------------------------
 ### Set variables by user
-Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
-Year <- 2000              # Only applies to Sexton script
+#Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
+#Chronosequence <- NULL    # Chronosequence within the country
+Year <- 2012              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
-Threshold <- 70           # Cells with values greater than threshold are classified as 'Forest'
+Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
 
+setInternet2(use = TRUE) 
 
 ###------------------------------------- Create Matrix for results ----------------------
 
@@ -85,85 +95,66 @@ countcoords <- nrow(mydata)
 
 
 #creating empty matrix
-mat <- matrix(, nrow = countcoords, ncol = 5)
-colnames(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen")
-
-#adding names of the buffers to the matrix
-for(i in 1:countcoords) {
-  nam <- paste("Buffer size: ", BufferDistance, ", year: ", Year , ", Thres: ", Threshold, ", nr: ", i,  sep = "")
-  mat[i] <- nam
-}
+mat <- matrix(, nrow = countcoords, ncol = 45)
 
 #creating empty dataframe
 mat <- data.frame(mat)
 
+# Copying data frames to equal the amount of databases
+mat -> mat1 -> mat2 -> mat3 -> mat4 -> mat5 -> mat6
+
+
 ###------------------------------------- Create loops -----------------------------------
-count <- 2
+count <- 1
 j <- 0
-#g <- 1
+
 
 for(i in 1:countcoords) {
-
+  
+  ## reading country code and chronosequence from mydata
+  Countrycode <- levels(mydata$Country[1 + j])[mydata$Country[1 + j]]
+  Chronosequence <- levels(mydata$Chronosequence[1 + j])[mydata$Chronosequence[1 + j]]
 
   ###------------------------------------ Run functions -----------------------------------
-  
-  Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the output folder
-  
-  
-  ## Analysis with sexton data
-  S <- Sexton(Year, Threshold)
-  
-  ## Species Distribution Modelling for both Sexton and Hansen data
-  SDMS <- SDM_function(S)
-  
-  ## adding column names based on output SDMTools function
-  if (j < 1){
-    #naming first 5 columns
-    colnames(SDMS) -> SDMS_colnames
-    names(mat) <- c("Buffer", "x_coordinates", "y_coordinates", "Sexton", "Hansen", SDMS_colnames)
-  } else {
-    
-  }
 
-  ## adding Coordinates to the matrix
-  mat[i, count] <- mydata$x[1 + j]
-  count <- count + 1
-  mat[i, count] <- mydata$y[1 + j]
-  count <- count + 1
+  ##
+  Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the data folder
   
-  #Adding Sexton results to the matrix
-  mat[i, count] <- SDMS
-  count <- count + 1
-  
-  ## Global Forest Cover Analysis with Hansen data
-  H <- Hansen(Threshold)
-  
-  ## Species Distribution Modelling for both Sexton and Hansen data
-  SDMH <- SDM_function(H)
-  
-  #Adding Hansen results to the matrix
-  mat[i, count] <- SDMH
-  count <- count - 3
-  
-  New_S <-projectRaster(S, H, res, crs, method="ngb", 
-                        alignOnly=FALSE, over=FALSE, filename="")
+  ## Analysis Forest data
+  Forest_Analysis(Year = Year, Countrycode = Countrycode, Chronosequence = Chronosequence, BufferDistance = BufferDistance, Threshold = Threshold)
   
   # Clear directory to prevent extraction errors
   unlink("data/BufferWGS.rds", recursive = FALSE)
-  
-  j <- 1 + j
 
+  ## assigning looping variables
+  j <- 1 + j
+  
+  ## write to excel and RDS and assign colunm names
+  if (i == countcoords){
+    Write_fun(Year)
+    print("Done")
+  } else {
+    print("looping again")
+  }
 }
 
-mat
-write.xlsx(mat, sprintf("output/%s_buffer%s_year%s.xlsx", Countrycode, BufferDistance, Year))
+
+
+
+
+
+
+
+
+#####################
+## Testing area
 
 # Assign plot fragmentation function to variables
 plot_Sexton <- SDM_plot(S)
 plot_Hansen <- SDM_plot(H)
 
-New_proj_Sexton <-projectRaster(plot_Sexton, plot_Hansen, res, crs, method="ngb", 
-                      alignOnly=FALSE, over=FALSE, filename="")
+#New_proj_Sexton <-projectRaster(plot_Sexton, plot_Hansen, res, crs, method="ngb", 
+#                                alignOnly=FALSE, over=FALSE, filename="")
 
 png(filename="output/Fragmentation.png")
 par(mfrow=c(2,2))

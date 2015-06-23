@@ -77,6 +77,14 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
   } else if (Year == 2012) {
     mat6 <- Write_metadata(mat = mat6 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
     H <- Hansen(Threshold, Year)
+    
+#     test <- values(H)
+#     countcells <- count(test, 1)
+#     countforest <- countcells[2,2]              
+#     countforestnonforest <- countcells[1,2]                
+#     total_cells <- countforest+countforestnonforest
+#     Forest_cover <- (countforest / total_cells) * 100
+#     
     SDMH_2012 <- SDM_function(H)
     SDMH_col <- ncol(SDMH_2012) + 7
     mat6[i, 8:SDMH_col] <- SDMH_2012
@@ -84,7 +92,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
       colnames(SDMH_2012) -> SDMH_2012_colnames
       names(mat6) <- c(caption, SDMH_2012_colnames)
       
-    } else{
+    } else {
       
     } 
     mat6 <<- mat6

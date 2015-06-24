@@ -64,7 +64,7 @@ dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 2000              # Only applies to Sexton script
+Year <- 1990              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
@@ -101,9 +101,7 @@ for(i in 1:countcoords) {
   pb <- winProgressBar(title = "progress bar", min = 0,
                        max = countcoords, width = 300)
 
-  Sys.sleep(0.1)
-  setWinProgressBar(pb, i, title=paste( round(i/countcoords*100, 0),
-                                          "% done"))
+
 
   
   
@@ -125,6 +123,10 @@ for(i in 1:countcoords) {
   ## assigning looping variables
   j <- 1 + j
   
+  Sys.sleep(0.1)
+  setWinProgressBar(pb, i, title=paste( round(i/countcoords*100, 0),
+                                        "% done"))
+  
   ## write to excel and RDS and assign colunm names
   if (i == countcoords){
     Write_fun(Year)
@@ -134,6 +136,7 @@ for(i in 1:countcoords) {
     print("looping again")
   }
   
+
 
 }
 

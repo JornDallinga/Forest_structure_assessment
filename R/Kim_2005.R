@@ -30,12 +30,12 @@ Kim_2005 <- function(Year){
   Crop_Raster <- crop(Raster, transform_buffer)
   
   # Masking the Raster to the buffer area
-  Masked_Raster1 <- mask(Crop_Raster, transform_buffer, progress = "window")
+  Masked_Raster <- mask(Crop_Raster, transform_buffer, progress = "window")
   
 
   # Set values and a value replacement function
   Masked_Raster[Masked_Raster < 5 | Masked_Raster == 19 | Masked_Raster > 91] <- 0
-  Masked_Raster[Masked_Raster == 11 & Masked_Raster == 91] <- 1
+  Masked_Raster[Masked_Raster == 11 | Masked_Raster == 91] <- 1
   
   # Reproject to 
   #Mask_proj <- projectRaster(Masked_Raster, crs = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))

@@ -16,7 +16,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     SDMK_col <- ncol(SDMK_1990) + 8
     
     ## writing results to matrix
-    mat3[i, 9:SDMK_col] <- SDMK_col
+    mat3[i, 9:SDMK_col] <- SDMK_1990
     
     ## Forest cover calc
     FC_K_1990 <- Forest_cover(K_1990)
@@ -147,7 +147,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat5[i, 9:SDMK_col] <- SDMK_2005
     
     ## Forest cover calc
-    FC_K_2005 <- Forest_cover(k_2005)
+    FC_K_2005 <- Forest_cover(K_2005)
     mat5[i, 8] <- FC_K_2005
     
     ## assigning col names

@@ -27,33 +27,27 @@ Sexton <- function(Year, Threshold){
   r_filename <- sprintf("%03d", pr$ROW)
   pr_filename <- sprintf("p%sr%s_TC_%s.tif", p_filename, r_filename, Year)
   
-  # create list of extraction map
-  x <- list.files(sprintf('%s/%s',dir,extract), full.names=FALSE)
+  # list all files in folder
+  list_file <- list.files(sprintf('%s/%s',dir,extract), full.names=FALSE)
+  
+  # Listing the pr_filenames in the list
+  x <- listing_files(list_file, pr_filename)
   
   # Unpack VCF data
   Unpack_VCF(pr_filename, x, extract, Year, pr, dir)
   
-  # Load data into R environment
-  Raster <- raster(sprintf("%s%s%s", dir, extract, pr_filename))
-  
-  # Cropping masked extent
-  transform_buffer<- spTransform(buffer, CRS(proj4string(Raster))) 
-  Crop_Raster <- crop(Raster, transform_buffer)
-  
-  # Masking the Raster to the buffer area
-  Masked_Raster <- mask(Crop_Raster, transform_buffer, progress = "window")
+  # list raster files
+  list_file <- list.files(sprintf('%s/%s',dir,extract), full.names=FALSE)
+  x_list <- listing_files(list_file, pr_filename)
+
+  # Mosaicing if multiple data sets are listed, else it takes a single raster
+  Masked_Raster <- Mosaic_Raster(x_list, dir, extract, buffer, pr_filename)
   
   # Set values and a value replacement function
   Masked_Raster[Masked_Raster < Threshold] <- 0
   Masked_Raster[Masked_Raster >= Threshold] <- 1
   Masked_Raster[Masked_Raster > 100] <- NA
-  
-  
-  #Mask_proj <- projectRaster(Masked_Raster, crs = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
-  
-#   test_Sexton <- writeRaster(Mask_proj, filename = "output/sexton.tif", overwrite = TRUE)
-#   kml(test_Sexton, colour = "RED")
-  
+
   return (Masked_Raster)
   
 }  

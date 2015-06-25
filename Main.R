@@ -48,6 +48,8 @@ source("R/SDMTool.R")
 source("R/SDM_plot.R")
 source("R/Write_Excel_RDS.R")
 source("R/Write_Metadata.R")
+source("R/Listing_files.R")
+source("R/Mosaic_Raster.R")
 
 
 ###------------------------------------- Create folders ----------------------------------
@@ -64,7 +66,7 @@ dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 1990              # Only applies to Sexton script
+Year <- 2000              # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 

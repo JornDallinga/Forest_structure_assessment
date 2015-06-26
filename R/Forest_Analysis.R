@@ -33,6 +33,10 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     ## create global variable of matrix
     mat3 <<- mat3
     
+    ## listing raster files and creating forest cover figure
+    Plot_Raster <- list(K_1990)
+    Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
+    
   } else if (Year == 2000){
     ## writing metadata to matrix
     mat <- Write_metadata(mat = mat ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
@@ -110,6 +114,12 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat1 <<- mat1
     mat2 <<- mat2
     
+    ## listing raster files and creating forest cover figure
+    Plot_Raster <- list(S, H, K_2000)
+    Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
+    
+    
+    
   } else if (Year == 2005){
     ## writing metadata to matrix
     mat4 <- Write_metadata(mat = mat4 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
@@ -164,6 +174,10 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat4 <<- mat4
     mat5 <<- mat5
     
+    ## listing raster files and creating forest cover figure
+    Plot_Raster <- list(S, K_2005)
+    Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
+    
   } else if (Year == 2012) {
     
     ## writing metadata to matrix
@@ -195,8 +209,11 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    
     mat6 <<- mat6
+    
+    ## listing raster files and creating forest cover figure
+    Plot_Raster <- list(H)
+    Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
     
   } else {
     warning("No valid year")

@@ -50,6 +50,7 @@ source("R/Write_Excel_RDS.R")
 source("R/Write_Metadata.R")
 source("R/Listing_files.R")
 source("R/Mosaic_Raster.R")
+source("R/Plotting.R")
 
 
 ###------------------------------------- Create folders ----------------------------------
@@ -66,7 +67,7 @@ dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 2000              # Only applies to Sexton script
+Year <- 2012            # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
@@ -76,7 +77,7 @@ setInternet2(use = TRUE)
 ###------------------------------------- Create Matrix for results ----------------------
 
 ## reading excel file
-mydata <- read.xlsx("Correct_excel.xlsx", 1)
+mydata <- read.xlsx("Correct_excel.xlsx", 4)
 countcoords <- nrow(mydata)
 
 
@@ -102,9 +103,9 @@ for(i in 1:countcoords) {
   # create progress bar
   pb <- winProgressBar(title = "progress bar", min = 0,
                        max = countcoords, width = 300)
-
-
-
+  Sys.sleep(0.1)
+  setWinProgressBar(pb, i, title=paste( round(i/countcoords*100, 0),
+                                        "% done"))
   
   
   ## reading country code and chronosequence from mydata
@@ -125,10 +126,7 @@ for(i in 1:countcoords) {
   ## assigning looping variables
   j <- 1 + j
   
-  Sys.sleep(0.1)
-  setWinProgressBar(pb, i, title=paste( round(i/countcoords*100, 0),
-                                        "% done"))
-  
+
   ## write to excel and RDS and assign colunm names
   if (i == countcoords){
     Write_fun(Year)
@@ -143,21 +141,11 @@ for(i in 1:countcoords) {
 }
 
 
-
-
-
-
-
-
-
 ###------------------------------------- Testing area -----------------------------------
 
 # Assign plot fragmentation function to variables
 plot_Sexton <- SDM_plot(S)
 plot_Hansen <- SDM_plot(H)
-
-#New_proj_Sexton <-projectRaster(plot_Sexton, plot_Hansen, res, crs, method="ngb", 
-#                                alignOnly=FALSE, over=FALSE, filename="")
 
 png(filename="output/Fragmentation.png")
 par(mfrow=c(2,2))

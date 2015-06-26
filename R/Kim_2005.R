@@ -31,16 +31,13 @@ Kim_2005 <- function(Year){
   
   # Mosaicing if multiple data sets are listed, else it takes a single raster
   Masked_Raster <- Mosaic_Raster(x_list, dir, extract, buffer, pr_filename)
+  
   # Set values and a value replacement function
+  
   Masked_Raster[Masked_Raster < 5 | Masked_Raster == 19 | Masked_Raster > 91] <- 0
   Masked_Raster[Masked_Raster == 11 | Masked_Raster == 91] <- 1
   
-  # Reproject to 
-  #Mask_proj <- projectRaster(Masked_Raster, crs = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
-  
-  # write to kml
-  #test_Kim_2005 <- writeRaster(Mask_proj, filename = "output/Kim_2005.tif", overwrite = TRUE)
-  #kml(test_Kim_2005, colour = "RED")
+  names(Masked_Raster) <- "Kim"
   
   return (Masked_Raster)
   

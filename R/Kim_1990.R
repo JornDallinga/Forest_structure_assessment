@@ -7,7 +7,7 @@ Kim_1990 <- function(Year){
   pr <- getPR(buffer)
   dir <- "data/" # If doesnt work add "./"
   extract <- 'extract_Kim_1990/'
-  
+
   # Download data
   downloadPR(pr, Year, dir, log = NULL, baseURL = "ftp://ftp.glcf.umd.edu/glcf/")
   
@@ -36,13 +36,7 @@ Kim_1990 <- function(Year){
   Masked_Raster[Masked_Raster < 5 | Masked_Raster > 20] <- 0
   Masked_Raster[Masked_Raster > 10 & Masked_Raster < 20] <- 1
   
-  # Reproject to 
-  #Mask_proj <- projectRaster(Masked_Raster, crs = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
-  
-  # write to kml
-  #test_Kim_1990 <- writeRaster(Mask_proj, filename = "output/Kim_1990.tif", overwrite = TRUE)
-  #kml(test_Kim_1990, colour = "RED")
-  
+  names(Masked_Raster) <- "Kim"
   
   return (Masked_Raster)
   

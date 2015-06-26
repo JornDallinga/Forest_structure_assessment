@@ -47,7 +47,9 @@ Sexton <- function(Year, Threshold){
   Masked_Raster[Masked_Raster < Threshold] <- 0
   Masked_Raster[Masked_Raster >= Threshold] <- 1
   Masked_Raster[Masked_Raster > 100] <- NA
-
+  
+  names(Masked_Raster) <- "Sexton"
+  
   return (Masked_Raster)
   
 }  

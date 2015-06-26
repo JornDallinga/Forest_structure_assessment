@@ -55,6 +55,7 @@ Hansen <- function(Threshold, year = Year){
   
   # test_Hansen <- writeRaster(mask_gfc, filename = "output/hansen.tif", overwrite = T)
   # kml(test_Hansen, colour = "GREEN")
+  names(mask_gfc) <- "Hansen"
   
   return (mask_gfc)
 }

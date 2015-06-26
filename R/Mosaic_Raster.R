@@ -14,7 +14,7 @@ Mosaic_Raster <- function(x_list, dir, extract, buffer, pr_filename){
       Raster <- stack(rast.list[t])
       plot_Raster <- spTransform(buffer, CRS(proj4string(Raster))) 
       plot_crop <- crop(Raster, plot_Raster)
-      reproject <- projectRaster(from = plot_crop, crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+      reproject <- projectRaster(from = plot_crop, crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", method = 'ngb')
       new_list[t] <- reproject
       
       t <- t + 1
@@ -29,7 +29,7 @@ Mosaic_Raster <- function(x_list, dir, extract, buffer, pr_filename){
     Raster <- raster(sprintf("%s%s%s", dir, extract, pr_filename))
     plot_Raster <- spTransform(buffer, CRS(proj4string(Raster)))
     plot_crop <- crop(Raster, plot_Raster)
-    reproject <- projectRaster(from = plot_crop, crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+    reproject <- projectRaster(from = plot_crop, crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", method = 'ngb')
     mask_plot <- mask(reproject, buffer)
   }
     return (mask_plot)

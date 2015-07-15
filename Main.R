@@ -77,7 +77,7 @@ setInternet2(use = TRUE)
 ###------------------------------------- Create Matrix for results ----------------------
 
 ## reading excel file
-mydata <- read.xlsx("Correct_excel.xlsx", 4)
+mydata <- read.xlsx("Correct_excel.xlsx", 1)
 countcoords <- nrow(mydata)
 
 

@@ -2,18 +2,18 @@
 
 ###UTM conversion
 # Lat = Y Long = X
-mydata <- read.xlsx("Coordinates individual plots meta analysis_R_inprogress.xlsx", 5)
+mydata <- read.xlsx("Coordinates individual plots meta analysis_R_inprogress.xlsx", 17)
 
 d <- data.frame(x = mydata$Longitude, y = mydata$Latitude)
 point <- SpatialPoints(data.frame(x = d$x, y = d$y))
-proj4string(point) <- CRS("+proj=utm +zone=15 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+proj4string(point) <- CRS("+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 test <- spTransform(point, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
 coords_output <-data.frame(coordinates(test))
 
 d[3] <- coords_output[1]
 d[4] <- coords_output[2]
 
-write.xlsx(d, file = "outputcoordinates.xlsx", sheetName = "conversion_mexico",  append=T)
+write.xlsx(d, file = "outputcoordinates.xlsx", sheetName = "conversion_col_Providencia_Island",  append=T)
 
 
 
@@ -28,23 +28,36 @@ lon <- (mydata1$Degrees_lon + (mydata1$Minutes_lon/60) + (mydata1$Seconds_lon/36
 
 dd <- data.frame(lat, lon)
 
-write.xlsx(dd, file = "outputcoordinates.xlsx", sheetName = "conversion_mexico_Yuca_Quintana",  append=T)
+write.xlsx(dd, file = "outputcoordinates.xlsx", sheetName = "conversion_mexico_Nizanda",  append=T)
+
+
+
+
 
 
 ### Decimal degrees minutes conversion
 
-mydata2 <- read.xlsx("Coordinates individual plots meta analysis_R_inprogress.xlsx", 7)
+mydata2 <- read.xlsx("Coordinates individual plots meta analysis_R_inprogress.xlsx", 15)
 
 df <- mydata2
-test <- data.frame(do.call('rbind', strsplit(as.character(df$lat),"[Â'' \"°N]",fixed=F)))
-test[2] <- test[4] 
-test[3] <- test[6] 
-test$X4 <- NULL
-test$X5 <- NULL
-test$X6 <- NULL
-test$X7 <- NULL
-test$X8 <- NULL
-test$X9 <- NULL
-test$X10 <- NULL
 
-names(test) <- c("Degrees_lat", "Minutes_lat", "Seconds_lat")
+df_lat <- data.frame(do.call('rbind', strsplit(as.character(df$lat),"[Â'' \"°NSâ€™â€™]",fixed=F)))
+df_lat_Null <- df_lat[, colSums(df_lat != "") != 0]
+names(df_lat_Null) <- c("Degrees_lat", "Minutes_lat", "Seconds_lat")
+
+df_lon <- data.frame(do.call('rbind', strsplit(as.character(df$lon),"[Â'' \"°WEâ€™â€™]",fixed=F)))
+df_lon_Null <- df_lon[, colSums(df_lon != "") != 0]
+names(df_lon_Null) <- c("Degrees_lon", "Minutes_lon", "Seconds_lon")
+
+mydataframe <- data.frame(df_lat_Null, df_lon_Null)
+
+i <- sapply(mydataframe, is.factor)
+mydataframe[i] <- lapply(mydataframe[i], as.character)
+mydataframe[i] <- lapply(mydataframe[i], as.numeric)
+
+lat <- (mydataframe$Degrees_lat + (mydataframe$Minutes_lat/60) + (mydataframe$Seconds_lat/3600))
+lon <- (mydataframe$Degrees_lon + (mydataframe$Minutes_lon/60) + (mydataframe$Seconds_lon/3600))
+
+dd <- data.frame(lat, lon)
+
+write.xlsx(dd, file = "outputcoordinates.xlsx", sheetName = "conversion_Braz_Patos",  append=T)

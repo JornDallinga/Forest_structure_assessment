@@ -33,6 +33,9 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     ## create global variable of matrix
     mat3 <<- mat3
     
+    matrix_list <- list(mat3 = mat3)
+
+    
     ## listing raster files and creating forest cover figure
     Plot_Raster <- list(K_1990)
     Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
@@ -114,6 +117,9 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat1 <<- mat1
     mat2 <<- mat2
     
+    matrix_list <- list(mat = mat, mat1 = mat1, mat2 = mat2)
+
+    
     ## listing raster files and creating forest cover figure
     Plot_Raster <- list(S, H, K_2000)
     Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
@@ -174,6 +180,8 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat4 <<- mat4
     mat5 <<- mat5
     
+    matrix_list <- list(mat = mat4, mat = mat5)
+    
     ## listing raster files and creating forest cover figure
     Plot_Raster <- list(S, K_2005)
     Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
@@ -211,6 +219,9 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     ## create global variable of matrix
     mat6 <<- mat6
     
+    matrix_list <- list(mat = mat6)
+    
+    
     ## listing raster files and creating forest cover figure
     Plot_Raster <- list(H)
     Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
@@ -218,6 +229,8 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
   } else {
     warning("No valid year")
   }
-
   
+  return(matrix_list)
+
+
 }

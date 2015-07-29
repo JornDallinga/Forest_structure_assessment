@@ -51,6 +51,8 @@ source("R/Write_Metadata.R")
 source("R/Listing_files.R")
 source("R/Mosaic_Raster.R")
 source("R/Plotting.R")
+source("R/calc_mean.R")
+
 
 
 ###------------------------------------- Create folders ----------------------------------
@@ -67,7 +69,7 @@ dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 2012            # Only applies to Sexton script
+Year <- 2000            # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
@@ -77,7 +79,7 @@ setInternet2(use = TRUE)
 ###------------------------------------- Create Matrix for results ----------------------
 
 ## reading excel file
-mydata <- read.xlsx("Correct_excel.xlsx", 1)
+mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 3)
 countcoords <- nrow(mydata)
 
 
@@ -118,7 +120,7 @@ for(i in 1:countcoords) {
   Buffer_Point(Countrycode, BufferDistance) #Places a .rds file in the data folder
   
   ## Analysis Forest data
-  Forest_Analysis(Year = Year, Countrycode = Countrycode, Chronosequence = Chronosequence, BufferDistance = BufferDistance, Threshold = Threshold)
+  matrix_list <- Forest_Analysis(Year = Year, Countrycode = Countrycode, Chronosequence = Chronosequence, BufferDistance = BufferDistance, Threshold = Threshold)
   
   # Clear directory to prevent extraction errors
   unlink("data/BufferWGS.rds", recursive = FALSE)
@@ -130,15 +132,17 @@ for(i in 1:countcoords) {
   ## write to excel and RDS and assign colunm names
   if (i == countcoords){
     Write_fun(Year)
+    mat_list <- lapply(matrix_list, calc_mean)
+    lapply(1:length(mat_list), function(i) write.xlsx(mat_list[[i]], file = sprintf("output/Excel/mean_Year%s_Threshold%s_%s.xlsx", Year, Threshold, names(mat_list[i]))))
     print("Done")
     close(pb)
   } else {
     print("looping again")
   }
   
-
-
 }
+
+
 
 
 ###------------------------------------- Testing area -----------------------------------

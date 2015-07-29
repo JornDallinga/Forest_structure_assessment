@@ -16,8 +16,10 @@ calc_mean <- function(mat){
   mat_buffer <- unique(mat$Buffer)
   mat_threshold <- unique(mat$Threshold)
   
-  test <- sprintf("Year%s_buffer%s_threshold%s", mat_year, mat_buffer, mat_threshold)
+
+  #sheetnam <- substitute(mat)
+  #sheetnam <- toString(sheetnam)
   
-  mean_matrix -> test
+  return (mean_matrix)
 }
 

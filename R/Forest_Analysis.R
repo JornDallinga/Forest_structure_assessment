@@ -31,9 +31,9 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    mat3 <<- mat3
+    Kim_1990 <<- mat3
     
-    matrix_list <- list(mat3 = mat3)
+    matrix_list <- list(Kim_1990 = Kim_1990)
 
     
     ## listing raster files and creating forest cover figure
@@ -113,11 +113,11 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    mat <<- mat
-    mat1 <<- mat1
-    mat2 <<- mat2
+    Sexton_2000 <<- mat
+    Hansen_2000 <<- mat1
+    Kim_2000 <<- mat2
     
-    matrix_list <- list(mat = mat, mat1 = mat1, mat2 = mat2)
+    matrix_list <- list(Sexton_2000 = Sexton_2000, Hansen_2000 = Hansen_2000, Kim_2000 = Kim_2000)
 
     
     ## listing raster files and creating forest cover figure
@@ -177,10 +177,10 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    mat4 <<- mat4
-    mat5 <<- mat5
+    Sexton_2005 <<- mat4
+    Kim_2005 <<- mat5
     
-    matrix_list <- list(mat = mat4, mat = mat5)
+    matrix_list <- list(Sexton_2005 = Sexton_2005, Kim_2005 = Kim_2005)
     
     ## listing raster files and creating forest cover figure
     Plot_Raster <- list(S, K_2005)
@@ -217,9 +217,9 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    mat6 <<- mat6
+    Hansen_2012 <<- mat6
     
-    matrix_list <- list(mat = mat6)
+    matrix_list <- list(Hansen_2012 = Hansen_2012)
     
     
     ## listing raster files and creating forest cover figure

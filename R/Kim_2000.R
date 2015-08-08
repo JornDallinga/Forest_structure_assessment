@@ -1,5 +1,3 @@
-
-
 Kim_2000 <- function(Year){
   # Get buffer locations
   

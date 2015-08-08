@@ -125,7 +125,6 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
     
     
-    
   } else if (Year == 2005){
     ## writing metadata to matrix
     mat4 <- Write_metadata(mat = mat4 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )

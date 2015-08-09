@@ -129,7 +129,6 @@ for(i in 1:countcoords) {
   ## assigning looping variables
   j <- 1 + j
   
-
   ## write to excel and RDS and assign colunm names
   if (i == countcoords){
     Write_fun(matrix_list)
@@ -138,7 +137,7 @@ for(i in 1:countcoords) {
     print("Done")
     close(pb)
   } else {
-    print("looping again")
+    print(sprintf("looping nr = %s", i))
   }
   
 }

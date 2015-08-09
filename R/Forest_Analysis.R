@@ -7,7 +7,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat3 <- Write_metadata(mat = mat3 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
     
     ## calculating forest cover raster
-    K_1990 <- Kim_1990(Year = 19902000)
+    K_1990 <- Kim_fun_1990(Year = 19902000)
     
     ## applying SDM function to forest cover raster
     SDMK_1990 <- SDM_function(K_1990)
@@ -31,9 +31,9 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    Kim_1990 <<- mat3
+    mat3 <<- mat3
     
-    matrix_list <- list(Kim_1990 = Kim_1990)
+    matrix_list <- list(kim_1990 = mat3)
 
     
     ## listing raster files and creating forest cover figure
@@ -85,7 +85,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat2 <- Write_metadata(mat = mat2 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
     
     ## calculating forest cover raster
-    K_2000 <- Kim_2000(Year = 20002005)
+    K_2000 <- Kim_fun_2000(Year = 20002005)
     
     ## applying SDM function to forest cover raster
     SDMK_2000 <- SDM_function(K_2000)
@@ -113,11 +113,11 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    Sexton_2000 <<- mat
-    Hansen_2000 <<- mat1
-    Kim_2000 <<- mat2
+    mat <<- mat
+    mat1 <<- mat1
+    mat2 <<- mat2
     
-    matrix_list <- list(Sexton_2000 = Sexton_2000, Hansen_2000 = Hansen_2000, Kim_2000 = Kim_2000)
+    matrix_list <- list(Sexton_2000 = mat, Hansen_2000 = mat1, Kim_2000 = mat2)
 
     
     ## listing raster files and creating forest cover figure
@@ -150,7 +150,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat5 <- Write_metadata(mat = mat5 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
     
     ## calculating forest cover raster
-    K_2005 <- Kim_2005(Year = 20002005)
+    K_2005 <- Kim_fun_2005(Year = 20002005)
     
     ## applying SDM function to forest cover raster
     SDMK_2005 <- SDM_function(K_2005)
@@ -176,10 +176,10 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    Sexton_2005 <<- mat4
-    Kim_2005 <<- mat5
+    mat4 <<- mat4
+    mat5 <<- mat5
     
-    matrix_list <- list(Sexton_2005 = Sexton_2005, Kim_2005 = Kim_2005)
+    matrix_list <- list(Sexton_2005 = mat4, Kim_2005 = mat5)
     
     ## listing raster files and creating forest cover figure
     Plot_Raster <- list(S, K_2005)
@@ -216,9 +216,9 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     } 
     
     ## create global variable of matrix
-    Hansen_2012 <<- mat6
+    mat6 <<- mat6
     
-    matrix_list <- list(Hansen_2012 = Hansen_2012)
+    matrix_list <- list(Hansen_2012 = mat6)
     
     
     ## listing raster files and creating forest cover figure

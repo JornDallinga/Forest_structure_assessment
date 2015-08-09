@@ -40,18 +40,19 @@ source("R/Sexton.R")
 source("R/Forest_Analysis.R")
 source("R/Forest_cover.R")
 source("R/Unpack_VCF.R")
-source("R/Kim_1990.R")
-source("R/Kim_2005.R")
+source("R/Kim_fun_1990.R")
+source("R/Kim_fun_2000.R")
+source("R/Kim_fun_2005.R")
 source("R/Hansen.R")
 source("R/SDMTool.R")
 source("R/SDM_plot.R")
-source("R/Write_Excel_RDS.R")
+source("R/Write_data.R")
 source("R/Write_Metadata.R")
 source("R/Listing_files.R")
 source("R/Mosaic_Raster.R")
 source("R/Plotting.R")
 source("R/calc_mean.R")
-source("R/Kim_2000.R")
+
 
 
 
@@ -79,7 +80,7 @@ setInternet2(use = TRUE)
 ###------------------------------------- Create Matrix for results ----------------------
 
 ## reading excel file
-mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 2)
+mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 3)
 countcoords <- nrow(mydata)
 
 
@@ -131,7 +132,7 @@ for(i in 1:countcoords) {
 
   ## write to excel and RDS and assign colunm names
   if (i == countcoords){
-    Write_fun(Year)
+    Write_fun(matrix_list)
     mat_list <- lapply(matrix_list, calc_mean)
     lapply(1:length(mat_list), function(i) write.xlsx(mat_list[[i]], file = sprintf("output/Excel/mean_Buffer%s_Threshold%s_%s.xlsx", BufferDistance, Threshold, names(mat_list[i]))))
     print("Done")

@@ -27,11 +27,22 @@ Hansen <- function(Threshold, year = Year){
   gfc_thresholded <- threshold_gfc(gfc_extract, Threshold=Threshold, 
                                    filename="data/extract_hansen/GFC_extract_thresholded.tif", overwrite=TRUE)
   
+  
+  # retrieve water
+  Water <- freq(gfc_thresholded$datamask, digits= 0, value = 2, useNA = no)
+  listvalues <- values(gfc_thresholded$datamask)
+  countcells <- count(listvalues)
+  countcells <- countcells[!is.na(countcells$x),]
+  total_cells <- sum(countcells$freq)
+  ## percentage water
+  Water_perc <- (Water / total_cells) * 100
+  
   # Set mask over tresholded gfc, size of buffer
 
   if (year == 2000){
     ## create forest cover mask year 2000
     mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
+    
   } else if (year == 2012){
     ## create forest cover loss map 2012
     mask_gfc_loss <- mask(gfc_thresholded$lossyear, aoi)
@@ -56,6 +67,8 @@ Hansen <- function(Threshold, year = Year){
   # test_Hansen <- writeRaster(mask_gfc, filename = "output/hansen.tif", overwrite = T)
   # kml(test_Hansen, colour = "GREEN")
   names(mask_gfc) <- "Hansen"
+  
+  return_list <- list(mask_gfc, Water_perc)
   
   return (mask_gfc)
 }

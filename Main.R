@@ -40,9 +40,7 @@ source("R/Sexton.R")
 source("R/Forest_Analysis.R")
 source("R/Forest_cover.R")
 source("R/Unpack_VCF.R")
-source("R/Kim_fun_1990.R")
-source("R/Kim_fun_2000.R")
-source("R/Kim_fun_2005.R")
+source("R/Kim_fun.R")
 source("R/Hansen.R")
 source("R/SDMTool.R")
 source("R/SDM_plot.R")
@@ -52,7 +50,6 @@ source("R/Listing_files.R")
 source("R/Mosaic_Raster.R")
 source("R/Plotting.R")
 source("R/calc_mean.R")
-
 
 
 
@@ -70,7 +67,7 @@ dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 2000            # Only applies to Sexton script
+Year <- 2000           # Only applies to Sexton script
 BufferDistance <- 1000    # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
@@ -80,12 +77,12 @@ setInternet2(use = TRUE)
 ###------------------------------------- Create Matrix for results ----------------------
 
 ## reading excel file
-mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 3)
+mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 4)
 countcoords <- nrow(mydata)
 
 
 #creating empty matrix
-mat <- matrix(, nrow = countcoords, ncol = 46)
+mat <- matrix(, nrow = countcoords, ncol = 48)
 
 #creating empty dataframe
 mat <- data.frame(mat)
@@ -95,9 +92,9 @@ mat -> mat1 -> mat2 -> mat3 -> mat4 -> mat5 -> mat6
 
 
 ###------------------------------------- Create loops -----------------------------------
+
 count <- 1
 j <- 0
-
 
 ###------------------------------------- Run Script -----------------------------------
 
@@ -133,7 +130,7 @@ for(i in 1:countcoords) {
   if (i == countcoords){
     Write_fun(matrix_list)
     mat_list <- lapply(matrix_list, calc_mean)
-    lapply(1:length(mat_list), function(i) write.xlsx(mat_list[[i]], file = sprintf("output/Excel/mean_Buffer%s_Threshold%s_%s.xlsx", BufferDistance, Threshold, names(mat_list[i]))))
+    lapply(1:length(mat_list), function(i) write.xlsx(mat_list[[i]], file = sprintf("output/Excel/mean_Buffer%s_Threshold%s_Year%s.xlsx", BufferDistance, Threshold, Year), sheetName = names(mat_list[i]), append = T))
     print("Done")
     close(pb)
   } else {

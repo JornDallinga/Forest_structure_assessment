@@ -2,18 +2,18 @@
 
 ###UTM conversion
 # Lat = Y Long = X
-mydata <- read.xlsx("Coordinates individual plots meta analysis_R_inprogress.xlsx", 17)
+mydata <- read.xlsx("Chrono_Coords_list_Thesis DMAR 19Jul15.xlsx", 2)
 
 d <- data.frame(x = mydata$Longitude, y = mydata$Latitude)
 point <- SpatialPoints(data.frame(x = d$x, y = d$y))
-proj4string(point) <- CRS("+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+proj4string(point) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 test <- spTransform(point, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
 coords_output <-data.frame(coordinates(test))
 
 d[3] <- coords_output[1]
 d[4] <- coords_output[2]
 
-write.xlsx(d, file = "outputcoordinates.xlsx", sheetName = "conversion_col_Providencia_Island",  append=T)
+write.xlsx(d, file = "outputcoordinates.xlsx", sheetName = "conversion_PER_Pucallpa",  append=T)
 
 
 

@@ -1,6 +1,7 @@
 Callibrate_ras <- function(mask_gfc, Masked_Raster){
   
   ## using resample to create similar dimensions
+  mask_gfc <- mask(gfc_extract$treecover2000, aoi)
   new_mask_gfc <- resample(mask_gfc, Masked_Raster, method = "ngb")
   
   ## stacking testa and useing layerStats
@@ -36,11 +37,11 @@ Callibrate_ras <- function(mask_gfc, Masked_Raster){
   
   ## testing aggregation
   test <- lm(getValues(Sexton_aggregated) ~ getValues(Hansen_aggregated), na.action=na.exclude)
-  plot(getValues(Sexton_aggregated) ~ getValues(Hansen_aggregated))
-  poly_test1 <- lm(getValues(Sexton_aggregated) ~ poly(getValues(Hansen_aggregated), degree = 3, raw = T), na.action=na.exclude)
-  lines(lowess(getValues(Sexton_aggregated) ~ getValues(Hansen_aggregated)), col = 2)
+  plot(getValues(Hansen_mask) ~ getValues(Sexton_mask))
+  poly_test1 <- lm(getValues(Hansen_aggregated) ~ poly(getValues(Sexton_aggregated), degree = 2, raw = T), na.action=na.exclude)
+  lines(lowess(getValues(Hansen_mask) ~ getValues(Sexton_mask)), col = 2)
   
-  aggr_brick <- brick(Sexton_aggregated, Hansen_aggregated)
+  aggr_brick <- brick(Hansen_mask, Sexton_mask)
   pairs(aggr_brick)
 
   ## plot and line a polynomial or quadtritic regression

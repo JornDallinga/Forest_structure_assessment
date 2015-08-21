@@ -90,7 +90,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     FC_H_2000 <- Forest_cover(H[[1]])
     mat1[i, 8] <- FC_H_2000
     ## Water
-    mat1[i, 9] <- S[[2]]
+    mat1[i, 9] <- H[[2]]
     ## Cloud
     mat1[i, 10] <- 0
     
@@ -99,7 +99,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat2 <- Write_metadata(mat = mat2 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
     
     ## calculating forest cover raster
-    K_2000 <- Kim_fun(Year = 20002005)
+    K_2000 <- Kim_fun(Year = 20002005, Data = 2000)
     
     ## applying SDM function to forest cover raster
     SDMK_2000 <- SDM_function(K_2000[[1]])
@@ -144,6 +144,12 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     Plot_Raster <- list(S[[1]], H[[1]], K_2000[[1]])
     Plot_function(Year = Year, BufferDistance = BufferDistance, Threshold = Threshold, Plot_Raster)
     
+    Figure_output <- list(S[[4]], H[[3]], K_2000[[4]])
+    plot_Figures(Figure_output,j)
+    
+    
+    
+    
     
   } else if (Year == 2005){
     ## writing metadata to matrix
@@ -174,7 +180,7 @@ Forest_Analysis <- function(Year = Year, Countrycode = Countrycode, Chronosequen
     mat5 <- Write_metadata(mat = mat5 ,Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold )
     
     ## calculating forest cover raster
-    K_2005 <- Kim_fun(Year = 20002005)
+    K_2005 <- Kim_fun(Year = 20002005, Data = 2005)
     
     ## applying SDM function to forest cover raster
     SDMK_2005 <- SDM_function(K_2005[[1]])

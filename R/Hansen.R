@@ -37,26 +37,45 @@ Hansen <- function(Threshold, year = Year){
   ## percentage water
   Water_perc <- (Water / total_cells) * 100
   
+  ## Masking gfc data to aoi
+  mask_gfc <- mask(gfc_thresholded, aoi)
+  
+  
+  ## creating figure output
+  Figure_output <- mask_gfc
+  
+  Figure_output$forest2000[Figure_output$forest2000 == 1] <- 2 # Forest
+  Figure_output$forest2000[Figure_output$forest2000 == 0] <- 1 # Non-Forest
+  Figure_output$datamask[Figure_output$datamask == 2] <- 3 # water
+  Figure_output$datamask[Figure_output$datamask == 0] <- 4 # No data
+  suppressWarnings(Figure_output$datamask[Figure_output$datamask < 3] <- NA) # Nodata for merging
+
+  
+  Figure_output <- merge(Figure_output$forest2000, Figure_output$datamask, overlap = T)
+  
+  names(Figure_output) <- "Hansen"
+  
+  
   # Set mask over tresholded gfc, size of buffer
 
   if (year == 2000){
     ## create forest cover mask year 2000
-    mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
+    mask_gfc <- mask_gfc$forest2000
     
   } else if (year == 2012){
     ## create forest cover loss map 2012
-    mask_gfc_loss <- mask(gfc_thresholded$lossyear, aoi)
+    mask_gfc_loss <- mask_gfc$lossyear
     #### Set values and a value replacement function
     mask_gfc_loss[mask_gfc_loss > 0 & mask_gfc_loss < 13]  <- 1
     
     ## create forest cover gain map 2012
-    mask_gfc_gain <- mask(gfc_thresholded$gain, aoi)
+    mask_gfc_gain <- mask_gfc$gain
     
     ## create forest cover lossgain 2012
-    mask_gfc_lossgain <- mask(gfc_thresholded$lossgain, aoi)
+    mask_gfc_lossgain <- mask_gfc$lossgain
     
     ## Create forest cover map 2012
-    mask_gfc <- mask(gfc_thresholded$forest2000, aoi)
+    mask_gfc <- mask_gfc$forest2000
     mask_gfc <- (((mask_gfc - mask_gfc_loss) + mask_gfc_gain) + mask_gfc_lossgain)
     
   } else {
@@ -64,11 +83,10 @@ Hansen <- function(Threshold, year = Year){
   }
 
   
-  # test_Hansen <- writeRaster(mask_gfc, filename = "output/hansen.tif", overwrite = T)
-  # kml(test_Hansen, colour = "GREEN")
   names(mask_gfc) <- "Hansen"
+
   
-  return_list <- list(mask_gfc, Water_perc)
+  return_list <- list(mask_gfc, Water_perc, Figure_output)
   
-  return (mask_gfc)
+  return (return_list)
 }

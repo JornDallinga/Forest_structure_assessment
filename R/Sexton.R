@@ -43,6 +43,17 @@ Sexton <- function(Year, Threshold){
   # Mosaicing if multiple data sets are listed, else it takes a single raster
   Masked_Raster <- Mosaic_Raster(x_list, dir, extract, buffer, pr_filename)
   
+  # Creating figure information
+  
+  Figure_output <- Masked_Raster
+
+  Figure_output[Figure_output < Threshold] <- 1
+  Figure_output[Figure_output >= Threshold & Figure_output <= 100] <- 2
+  Figure_output[Figure_output == 200] <- 3
+  Figure_output[Figure_output == 210 | Figure_output == 211 | Figure_output == 220] <- 4
+  
+  names(Figure_output) <- "sexton"
+  
   # retrieve water
   Water <- freq(Masked_Raster, digits= 0, value = 200, useNA = no)
   listvalues <- values(Masked_Raster)
@@ -67,9 +78,11 @@ Sexton <- function(Year, Threshold){
   Masked_Raster[Masked_Raster >= Threshold] <- 1
   Masked_Raster[Masked_Raster > 100] <- NA
   
+  
   names(Masked_Raster) <- "Sexton"
   
-  return_list <- list(Masked_Raster, Water_perc, Clouds_perc)
+  return_list <- list(Masked_Raster, Water_perc, Clouds_perc, Figure_output)
+  
   return (return_list)
   
 }  

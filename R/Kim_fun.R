@@ -1,4 +1,4 @@
-Kim_fun <- function(Year){
+Kim_fun <- function(Year, Data){
   # Get buffer locations
   
   buffer <- readRDS(file = "Data/BufferWGS.rds", refhook = NULL)
@@ -30,7 +30,7 @@ Kim_fun <- function(Year){
   
   # Mosaicing if multiple data sets are listed, else it takes a single raster
   Masked_Raster <- Mosaic_Raster(x_list, dir, extract, buffer, pr_filename)
-  
+
   # retrieve water
   Water <- freq(Masked_Raster, digits= 0, value = 4, useNA = no)
   listvalues <- values(Masked_Raster)
@@ -49,22 +49,49 @@ Kim_fun <- function(Year){
   ## percentage water
   Clouds_perc <- (Clouds / total_cells) * 100
   
+  ## Copy Masked Raster for output figures
+  Figure_output <- Masked_Raster
   
   if (Year == 19902000){
     # Set values and a value replacement function
     Masked_Raster[Masked_Raster < 5 | Masked_Raster > 20] <- 0
     Masked_Raster[Masked_Raster > 10 & Masked_Raster < 20] <- 1
-  } else if (Year == 20002005){
+    
+    Figure_output[Figure_output > 20] <- 1 # non forest
+    Figure_output[Figure_output == 2 | Figure_output == 3 | Figure_output == 0] <- 6 # No data or clouds
+    Figure_output[Figure_output > 10 & Figure_output < 20] <- 2 # Forest
+    Figure_output[Figure_output == 4] <- 3 # Water
+    Figure_output[Figure_output == 6] <- 4 # No data or clouds
+    
+  } else if (Year == 20002005 & Data == 2000){
+    
     Masked_Raster[Masked_Raster < 10 | Masked_Raster >= 20] <- 0
     Masked_Raster[Masked_Raster > 10 & Masked_Raster < 20] <- 1
-  } else if (Year == 20002005){
+    
+    Figure_output[Figure_output >= 20] <- 1
+    Figure_output[Figure_output == 2 | Figure_output == 3 | Figure_output == 0] <- 6
+    Figure_output[Figure_output > 10 & Figure_output < 20] <- 2
+    Figure_output[Figure_output == 4] <- 3
+    Figure_output[Figure_output == 6] <- 4
+    
+    
+  } else if (Year == 20002005 & Data == 2005){
     Masked_Raster[Masked_Raster < 5 | Masked_Raster == 19 | Masked_Raster > 91] <- 0
     Masked_Raster[Masked_Raster == 11 | Masked_Raster == 91] <- 1
+    
+    Figure_output[Figure_output == 19 | Figure_output == 99] <- 1
+    Figure_output[Figure_output == 2 | Figure_output == 3 | Figure_output == 0] <- 6
+    Figure_output[Figure_output == 11 & Figure_output == 91] <- 2
+    Figure_output[Figure_output == 4] <- 3
+    Figure_output[Figure_output == 6] <- 4
+    
+
   }
 
   names(Masked_Raster) <- "Kim"
+  names(Figure_output) <- "Kim"
   
-  return_list <- list(Masked_Raster, Water_perc, Clouds_perc)
+  return_list <- list(Masked_Raster, Water_perc, Clouds_perc, Figure_output)
   
   return (return_list)
   

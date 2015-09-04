@@ -1,7 +1,9 @@
-Write_metadata <- function(mat, Countrycode = Countrycode, Chronosequence = Chronosequence, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold){
+Write_metadata <- function(mat, Countrycode = Countrycode, Chronosequence = Chronosequence, Plot_ID = Plot_ID, Year = Year, BufferDistance = BufferDistance, Threshold = Threshold){
   mat[i, count] <- paste(Countrycode)
   count <- count + 1
   mat[i, count] <- paste(Chronosequence)
+  count <- count + 1
+  mat[i, count] <- paste(Plot_ID)
   count <- count + 1
   mat[i, count] <- paste(Year)
   count <- count + 1
@@ -12,7 +14,7 @@ Write_metadata <- function(mat, Countrycode = Countrycode, Chronosequence = Chro
   mat[i, count] <- mydata$x[1 + j]
   count <- count + 1
   mat[i, count] <- mydata$y[1 + j]
-  count <- count - 6
+  count <- count - 7
   return(mat)
   
 }

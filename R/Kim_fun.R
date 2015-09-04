@@ -30,7 +30,7 @@ Kim_fun <- function(Year, Data){
   
   # Mosaicing if multiple data sets are listed, else it takes a single raster
   Masked_Raster <- Mosaic_Raster(x_list, dir, extract, buffer, pr_filename)
-
+  
   # retrieve water
   Water <- freq(Masked_Raster, digits= 0, value = 4, useNA = no)
   listvalues <- values(Masked_Raster)
@@ -65,7 +65,7 @@ Kim_fun <- function(Year, Data){
     
   } else if (Year == 20002005 & Data == 2000){
     
-    Masked_Raster[Masked_Raster < 10 | Masked_Raster >= 20] <- 0
+    Masked_Raster[Masked_Raster < 10 | Masked_Raster > 20] <- 0
     Masked_Raster[Masked_Raster > 10 & Masked_Raster < 20] <- 1
     
     Figure_output[Figure_output >= 20] <- 1

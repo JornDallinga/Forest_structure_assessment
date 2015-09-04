@@ -10,20 +10,20 @@
 
 SDM_function <- function(S){
   asc.from.raster(S)
-  head(S)
+  #head(S)
   
   ## Label the connected components (create islands with same labels when cells are connected)
-  ccl.mat <- ConnCompLabel(S)
+  #ccl.mat <- ConnCompLabel(S)
   
   # Calculate the patch statistics
-  ps.data <- PatchStat(ccl.mat)
-  ps.data
+  #ps.data <- PatchStat(ccl.mat)
+  #ps.data
   
   ##### testing data frame
   
   
   #### Creating statistics from forest cover map
-  c1.data <- ClassStat(S)
+  c1.data <- ClassStat(S, cellsize = 30, latlon = T)
   
   #### Set all values to 0 if the area has no forest cover
   if (nrow(c1.data) == 1 & (c1.data)[1,1] == 0) {
@@ -35,8 +35,8 @@ SDM_function <- function(S){
   
   ##### testing data frame
   
-  nr_patches <-count(ps.data$patchID)
-  nr_patches <- sum(nr_patches$freq)
+  #nr_patches <-count(ps.data$patchID)
+  #nr_patches <- sum(nr_patches$freq)
   return (c1.data)
 }
 

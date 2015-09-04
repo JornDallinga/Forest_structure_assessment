@@ -27,18 +27,19 @@ Hansen <- function(Threshold, year = Year){
   gfc_thresholded <- threshold_gfc(gfc_extract, Threshold=Threshold, 
                                    filename="data/extract_hansen/GFC_extract_thresholded.tif", overwrite=TRUE)
   
+  ## Masking gfc data to aoi
+  mask_gfc <- mask(gfc_thresholded, aoi)
   
   # retrieve water
-  Water <- freq(gfc_thresholded$datamask, digits= 0, value = 2, useNA = no)
-  listvalues <- values(gfc_thresholded$datamask)
+  Water <- freq(mask_gfc$datamask, digits= 0, value = 2, useNA = no)
+  listvalues <- values(mask_gfc$datamask)
   countcells <- count(listvalues)
   countcells <- countcells[!is.na(countcells$x),]
   total_cells <- sum(countcells$freq)
   ## percentage water
   Water_perc <- (Water / total_cells) * 100
   
-  ## Masking gfc data to aoi
-  mask_gfc <- mask(gfc_thresholded, aoi)
+
   
   
   ## creating figure output
@@ -51,7 +52,7 @@ Hansen <- function(Threshold, year = Year){
   suppressWarnings(Figure_output$datamask[Figure_output$datamask < 3] <- NA) # Nodata for merging
 
   
-  Figure_output <- merge(Figure_output$forest2000, Figure_output$datamask, overlap = T)
+  Figure_output <- merge(Figure_output$datamask, Figure_output$forest2000, overlap = T)
   
   names(Figure_output) <- "Hansen"
   

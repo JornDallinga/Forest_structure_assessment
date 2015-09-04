@@ -1,12 +1,14 @@
 plot_Figures <- function(Figure_output, j){
   
-  dir.create(file.path(sprintf('output/Figures/Buffer_%s', BufferDistance)), showWarnings = FALSE)
-  dir.create(file.path(sprintf('output/Figures/Buffer_%s/Threshold_%s', BufferDistance, Threshold)), showWarnings = FALSE)
+  dir.create(file.path('output/Figures'), showWarnings = FALSE)
+  dir.create(file.path(sprintf('output/Figures/%s', Chronosequence)), showWarnings = FALSE)
+  dir.create(file.path(sprintf('output/Figures/%s/Buffer_%s', Chronosequence, BufferDistance)), showWarnings = FALSE)
+  dir.create(file.path(sprintf('output/Figures/%s/Buffer_%s/Threshold_%s', Chronosequence, BufferDistance, Threshold)), showWarnings = FALSE)
   
-  png(filename= sprintf("output/Figures/Buffer_%s/Threshold_%s/Forestcover%s_Year%s_Threshold%s_Buffer%s.png", BufferDistance, Threshold, j, Year, Threshold, BufferDistance))  
+  png(filename= sprintf("output/Figures/%s/Buffer_%s/Threshold_%s/PlotID_%s_Year%s_Threshold%s_Buffer%s.png", Chronosequence, BufferDistance, Threshold, Plot_ID, Year, Threshold, BufferDistance), width = 1200, height = 800)  
   
   k <- 1
-  par(mfrow=c(2,2))
+  par(mfrow=c(2,2), mar=c(3, 3, 3, 15), cex = 1.1)
   
   ##########
   
@@ -38,17 +40,34 @@ plot_Figures <- function(Figure_output, j){
     # remove NA's
     
     test <- test[rowSums(is.na(test)) == 0,]
-    
+
     # preparing for plotting
     
-    legend_list <- list(test[,1]) 
-    legend <- unlist(legend_list)
+    if (class(test) == "matrix"){
+      
+      legend_list <- list(test[,1]) 
+      legend <- unlist(legend_list)
+      
+      col_list <- list(test[,2])
+      my_col <- unlist(col_list)
+      
+    } else {
+      
+      legend_list <- list(test[1]) 
+      legend <- unlist(legend_list)
+      
+      col_list <- list(test[2])
+      my_col <- unlist(col_list)
+    }
+
     
-    col_list <- list(test[,2])
-    my_col <- unlist(col_list)
+    plot(Figure_output[[k]], legend = F, col = my_col, main = sprintf("%s, %s, PlotID: %s", names(Figure_output[[k]]), Year, Plot_ID))
+    par(xpd = TRUE, cex = 1.1)
+    # Create y axes point for placing legend
+    set_y <- (ymin(Figure_output[[k]]) + ymax(Figure_output[[k]])) / 2
     
-    plot(Figure_output[[k]], legend = F, col = my_col, main = names(Figure_output[[k]]))
-    legend(x='topleft', legend = legend, fill = my_col)
+    # Using usr to get coordinate extreme for x axis to place the legend
+    legend(par()$usr[2], set_y, legend = legend, fill = my_col)
     
     k <- k + 1
   } 

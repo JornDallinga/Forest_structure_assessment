@@ -15,7 +15,6 @@ Mosaic_Raster <- function(x_list, dir, extract, buffer, pr_filename){
       plot_Raster <- spTransform(buffer, CRS(proj4string(Raster))) 
       plot_crop <- crop(Raster, plot_Raster)
       reproject <- projectRaster(from = plot_crop, crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", method = 'ngb')
-      res(reproject) <- c(0.00027,0.000271)
       new_list[t] <- reproject
       t <- t + 1
     }

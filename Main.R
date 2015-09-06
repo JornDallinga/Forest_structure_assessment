@@ -18,6 +18,7 @@ if (!require(spatstat)) install.packages('spatstat')
 if (!require(devtools)) install.packages("devtools")
 if (!require(spatstat)) install.packages('car')
 if (!require(spatstat)) install.packages('fsmb')
+if (!require(spatstat)) install.packages('RCurl')
 if (!require(MODIS)) install.packages("MODIS", repos="http://R-Forge.R-project.org")
 devtools::install_github('JornDallinga/VCF')
 
@@ -34,6 +35,7 @@ library (VCF)
 library (plyr)
 library (xlsx)
 library (car)
+library (RCurl)
 
 
 
@@ -75,7 +77,7 @@ dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 2000             # Only applies to Sexton script
+Year <- 1990             # Only applies to Sexton script
 BufferDistance <- 1000   # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
@@ -85,7 +87,7 @@ setInternet2(use = TRUE)
 ###------------------------------------- Create Matrix for results ----------------------
 
 ## reading excel file
-mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 4)
+mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 3)
 countcoords <- nrow(mydata)
 
 

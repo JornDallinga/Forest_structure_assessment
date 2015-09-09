@@ -27,12 +27,22 @@ Sexton <- function(Year, Threshold){
   p <- substr(pr_copy,1,3)
   r <- substr(pr_copy,4,6)
   
-  urlP <- sprintf('LandsatTreecover/WRS2/p%s/r%s/p%sr%s_TC_%d/', p, r, p, r, Year) #Path part of the url
-  urlF <- sprintf('p%sr%s_TC_%d.tif.gz', p, r, Year) # Filename part of the url
-  url <- sprintf('%s%s%s', baseURL = 'ftp://ftp.glcf.umd.edu/glcf/', urlP, urlF)
+  ## checking for patch/row existance
+  start_list <- list()
+  t <- 1
+  for (i in 1:length(pr_copy)){
+    urlP <- sprintf('LandsatTreecover/WRS2/p%s/r%s/p%sr%s_TC_%d/', p[t], r[t], p[t], r[t], Year) #Path part of the url
+    urlF <- sprintf('p%sr%s_TC_%d.tif.gz', p[t], r[t], Year) # Filename part of the url
+    url <- sprintf('%s%s%s', baseURL = 'ftp://ftp.glcf.umd.edu/glcf/', urlP, urlF)
+    Check <- url.exists(url = url)
+    start_list[t] <- Check
+    t <- t + 1
+  }
+
   
-  if (url.exists(url = url) == FALSE){
+  if ('FALSE' %in% start_list){
     return_list <- 'NA'
+    print("Missing Path/Rows within selected buffer")
     
     return(return_list)
     

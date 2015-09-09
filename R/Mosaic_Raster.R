@@ -2,7 +2,7 @@ Mosaic_Raster <- function(x_list, dir, extract, buffer, pr_filename){
   rast.list <- list()
   for(i in 1:length(x_list)) {
     list_raster <- sprintf("%s%s%s", dir, extract, x_list[i])
-    rast.list[i] <- raster(list_raster) 
+    rast.list[[i]] <- raster(list_raster) 
   }
   
   
@@ -18,7 +18,20 @@ Mosaic_Raster <- function(x_list, dir, extract, buffer, pr_filename){
       new_list[t] <- reproject
       t <- t + 1
     }
-    
+
+    # Bug fix in data sets, when resolutions dont match.
+    res_frame <- sapply(new_list, res)
+    find_uniq <- unique(res_frame)
+    if (ncol(find_uniq) > 1){
+      new_list <- lapply(new_list, resample, y = new_list[[1]], method = "ngb")
+      
+      #ind <- table(apply(res_frame, 1, paste, collapse = "/")) 
+      #ind <- which.max(ind) 
+      #mode_res <- as.numeric(strsplit(names(ind), "/")[[1]])
+
+    } else {
+      
+    }
     
     new_list$fun <- max
     new_list$tolerance <- 0.5

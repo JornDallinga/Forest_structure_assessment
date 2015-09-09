@@ -1,15 +1,13 @@
 ## reading data
 
-Biomass_data = read.table("Dataset recovery biomass Jorn formatted.txt")
-Species_data = read.table("Dataset recovery species richness Jorn formatted.txt")
+#Species_data = read.table("Dataset recovery species richness Jorn formatted.txt")
 
-head(Biomass_data)
-Biomass_data[1]
+head(Species_data)
 
-write.xlsx(Biomass_data, file = "output/Excel/Biomass_data.xlsx", sheetName = "Biomass_data", append = T)
-write.xlsx(Species_data, file = "output/Excel/Species_data.xlsx", sheetName = "Species_data", append = T)
+#write.xlsx(Biomass_data, file = "output/Excel/Biomass_data.xlsx", sheetName = "Biomass_data", append = T)
+#write.xlsx(Species_data, file = "output/Excel/Species_data.xlsx", sheetName = "Species_data", append = T)
 
-Species_data <- read.xlsx("Species_data.xlsx", 1)
+#Species_data <- read.xlsx("Species_data.xlsx", 1)
 test <- read.xlsx("output/Excel/Mean_Buffer1000_Threshold30_Year2000.xlsx", 1)
 
 ## merging data frames
@@ -37,7 +35,7 @@ subset_species[,!(names(subset_species) %in% new_drop)] <- sapply(subset_species
 ## regression testing
 ## predictor = Dependant variable
 fit <- lm(subset_species$pred20 ~ subset_species$precip + subset_species$Forest_cover + subset_species$T_CEC_SOIL5 + subset_species$Patch_cohesion, na.action = na.exclude)
-fit <- lm(subset_species$pred20 ~ subset_species$land.use + subset_species$precip + subset_species$T_CEC_SOIL5 + subset_species$n_patches,  na.action = na.exclude)
+fit <- lm(subset_species$pred20 ~ subset_species$land.use + subset_species$precip + subset_species$T_CEC_SOIL5 + subset_species$Forest_cover,  na.action = na.exclude)
 fit <- lm(subset_species$pred20 ~ subset_species$Forest_cover, na.action = na.exclude)
 fit <- lm(subset_species$pred20 ~ (log10(subset_species$Patch_cohesion)), na.action = na.exclude)
 
@@ -70,3 +68,14 @@ summary(Kim_fit)
 ## test for significant different between models
 Anova(Sexton_fit, Hansen_fit)
 
+
+## standardize data?
+
+scaled.dat <- scale(subset_species[,c("precip","Forest_cover", "T_CEC_SOIL5", "Patch_cohesion")])
+
+# check that we get mean of 0 and sd of 1
+colMeans(scaled.dat)  # faster version of apply(scaled.dat, 2, mean)
+apply(scaled.dat, 2, sd)
+
+fit <- lm(subset_species$pred20 ~ scaled.dat, na.action = na.exclude)
+summary(fit)

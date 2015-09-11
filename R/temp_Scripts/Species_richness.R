@@ -7,15 +7,15 @@ head(Species_data)
 #write.xlsx(Biomass_data, file = "output/Excel/Biomass_data.xlsx", sheetName = "Biomass_data", append = T)
 #write.xlsx(Species_data, file = "output/Excel/Species_data.xlsx", sheetName = "Species_data", append = T)
 
-#Species_data <- read.xlsx("Species_data.xlsx", 1)
-test <- read.xlsx("output/Excel/Mean_Buffer1000_Threshold30_Year2000.xlsx", 1)
+Species_data <- read.xlsx("Species_data.xlsx", 1)
+test <- read.xlsx("output/Excel/Mean_Buffer500_Threshold30_Year2000.xlsx", 1)
 
 ## merging data frames
 merge_Species <- merge(test, Species_data, by = "Chronosequence", all.x = F, all.y = F, sort = T)
 head(merge_Species)
 
 ## cleaning data fram
-drops <- c("NA.", "Country.y", "X1", "X1.x", "X1.y")
+drops <- c("NA.", "Country.y", "X1", "X1.x", "X1.y", "Lat", "Long", "class", "Water_cover", "Cloud_cover")
 merge_Species <- merge_Species[,!(names(merge_Species) %in% drops)]
 
 ## writing to xl
@@ -37,11 +37,17 @@ subset_species[,!(names(subset_species) %in% new_drop)] <- sapply(subset_species
 fit <- lm(subset_species$pred20 ~ subset_species$precip + subset_species$Forest_cover + subset_species$T_CEC_SOIL5 + subset_species$Patch_cohesion, na.action = na.exclude)
 fit <- lm(subset_species$pred20 ~ subset_species$land.use + subset_species$precip + subset_species$T_CEC_SOIL5 + subset_species$Forest_cover,  na.action = na.exclude)
 fit <- lm(subset_species$pred20 ~ subset_species$Forest_cover, na.action = na.exclude)
-fit <- lm(subset_species$pred20 ~ (log10(subset_species$Patch_cohesion)), na.action = na.exclude)
+fit <- lm(subset_species$pred20 ~ subset_species$edge.density + subset_species$Forest_cover, na.action = na.exclude)
 
-plot(subset_species$pred20 ~ subset_species$Patch_cohesion)
+plot(subset_species$pred20 ~ subset_species$edge.density + subset_species$Forest_cover)
 plot(fit)
 summary(fit)
+
+## Scatterplot prep
+subset_species_matrix <- subset_species[ , -which(names(subset_species) %in% c("land.use", "Country.x", "variable", "Chronosequence"))]
+subset_species_matrix <- subset(subset_species_matrix, select = c("Forest_cover","n.patches","patch.density", "edge.density", "landscape.shape.index", "aggregation.index", "effective.mesh.size", "patch.cohesion.index", "precip", "T_CEC_SOIL5", "pred40"))
+
+scatterplotMatrix(subset_species_matrix)
 
 ## check for collinearity
 vif(fit)

@@ -77,8 +77,8 @@ dir.create(file.path('data/extract_hansen'), showWarnings = FALSE)
 ### Set variables by user
 #Countrycode <- "CRI"      # See: http://en.wikipedia.org/wiki/ISO_3166-1
 #Chronosequence <- NULL    # Chronosequence within the country
-Year <- 1990             # Only applies to Sexton script
-BufferDistance <- 1000   # Distance in meters
+Year <- 2000             # Only applies to Sexton script
+BufferDistance <- 500 # Distance in meters
 Threshold <- 30           # Cells with values greater than threshold are classified as 'Forest'
 
 
@@ -87,7 +87,7 @@ setInternet2(use = TRUE)
 ###------------------------------------- Create Matrix for results ----------------------
 
 ## reading excel file
-mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 3)
+mydata <- read.xlsx("Chrono_Coords_list_R_Ready.xlsx", 2)
 countcoords <- nrow(mydata)
 
 

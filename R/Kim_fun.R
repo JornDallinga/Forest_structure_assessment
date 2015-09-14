@@ -111,7 +111,7 @@ Kim_fun <- function(Year, Data){
       
       Figure_output[Figure_output == 19 | Figure_output == 99] <- 1
       Figure_output[Figure_output == 2 | Figure_output == 3 | Figure_output == 0] <- 6
-      Figure_output[Figure_output == 11 & Figure_output == 91] <- 2
+      Figure_output[Figure_output == 11 | Figure_output == 91] <- 2
       Figure_output[Figure_output == 4] <- 3
       Figure_output[Figure_output == 6] <- 4
       
